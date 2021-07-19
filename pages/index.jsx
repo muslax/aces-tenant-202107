@@ -8,7 +8,7 @@ export default function Home() {
 
   if (isLoading) return <></>
 
-  const url = user ? '/dashboard' : '/login'
+  const url = user && user.isLoggedIn ? '/dashboard' : '/login'
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -21,7 +21,7 @@ export default function Home() {
         {user && <p className="bg-yellow-300 px-3 text-white text-base font-bold uppercase">{user.fullname}</p>}
         <h1 className="text-5xl font-bold my-8">
         Selalu pakai{' '}
-          <a href="/login" className="text-yellow-400">
+          <a href={url} className="text-yellow-400">
             masker
           </a>!
         </h1>

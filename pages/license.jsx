@@ -4,22 +4,18 @@ import { APIROUTES, ROUTES } from "config/routes";
 import useUser from "hooks/useUser";
 
 import LicenseLayout from "components/layout/LicenseLayout";
-import Dashboard from 'components/license/Dashboard';
+import License from 'components/license/License';
 import Prefetch from 'components/Prefetch';
 
 const LicensePage = () => {
   const { user } = useUser();
-
-  if (!user || !user.isLoggedIn) return null;
 
   return <>
     <Head>
       <title>Dashboard - ACES</title>
     </Head>
 
-    <p>LICENSE</p>
-
-    {/* <Dashboard user={user} /> */}
+    <License user={user} />
 
     <Prefetch uri={`${APIROUTES.GET.MODULES}`} />
   </>;

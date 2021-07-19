@@ -3,11 +3,11 @@ import Head from 'next/head'
 import { APIROUTES, ROUTES } from "config/routes"
 import useUser from "hooks/useUser"
 
-import LicenseLayout from "components/layout/LicenseLayout"
-import Dashboard from 'components/license/Dashboard'
+import FormLayout from "components/layout/FormLayout"
+import NewProject from 'components/license/NewProject'
 import Prefetch from 'components/Prefetch'
 
-const LicensePage = () => {
+const NewProjectPage = () => {
   const { user } = useUser()
 
   return <>
@@ -15,13 +15,13 @@ const LicensePage = () => {
       <title>Dashboard - ACES</title>
     </Head>
 
-    <Dashboard user={user} />
+    <NewProject user={user} />
 
     <Prefetch uri={`${APIROUTES.GET.MODULES}`} />
   </>
 }
 
-LicensePage.redirectUnAuthenticatedTo = ROUTES.Login
-LicensePage.getLayout = (page) => <LicenseLayout>{page}</LicenseLayout>
+NewProjectPage.redirectUnAuthenticatedTo = ROUTES.Login
+NewProjectPage.getLayout = (page) => <FormLayout>{page}</FormLayout>
 
-export default LicensePage
+export default NewProjectPage

@@ -45,6 +45,7 @@ export default withSession(async (req, res) => {
         _id: rs.license._id,
         type: rs.license.type,
         title: rs.license.title,
+        publishDate: rs.license.publishDate,
         disabled: rs.license.disabled,
         logoUrl: rs.license.logoUrl,
       },

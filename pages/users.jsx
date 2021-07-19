@@ -4,7 +4,7 @@ import { APIROUTES, ROUTES } from "config/routes";
 import useUser from "hooks/useUser";
 
 import LicenseLayout from "components/layout/LicenseLayout";
-import Dashboard from 'components/license/Dashboard';
+import Users from 'components/license/Users';
 import Prefetch from 'components/Prefetch';
 
 const LicensePage = () => {
@@ -17,9 +17,7 @@ const LicensePage = () => {
       <title>Dashboard - ACES</title>
     </Head>
 
-    <p>USERS</p>
-
-    {/* <Dashboard user={user} /> */}
+    <Users user={user} />
 
     <Prefetch uri={`${APIROUTES.GET.MODULES}`} />
   </>;
