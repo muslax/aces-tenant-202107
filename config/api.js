@@ -24,6 +24,7 @@ export const API = {
     DELETE_USER:            'delete-user',
     RESET_USER:             'reset-user',
     CHANGE_PASSWORD:        'change-password',
+    UPDATE_LOGO:            'update-logo',
 
     SAVE_PROJECT:           'save-project',
     SAVE_CLIENT_PROJECT:    'save-client-project',

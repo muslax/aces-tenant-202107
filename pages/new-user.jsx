@@ -12,7 +12,7 @@ const NewUserPage = () => {
 
   return <>
     <Head>
-      <title>Dashboard - ACES</title>
+      <title>New User - ACES</title>
     </Head>
 
     <NewUser user={user} />

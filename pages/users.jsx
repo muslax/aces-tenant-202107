@@ -14,7 +14,7 @@ const LicensePage = () => {
 
   return <>
     <Head>
-      <title>Dashboard - ACES</title>
+      <title>Users - ACES</title>
     </Head>
 
     <Users user={user} />

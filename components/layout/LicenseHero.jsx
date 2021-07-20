@@ -7,7 +7,7 @@ const LicenseHero = ({ user, isForm }) => {
         <div className="flex items-center justify--center space-x-5">
           <div className={`rounded-full w-20 h-20 ${isForm ? '' : 'sm:w-24 sm:h-24'}`}>
             <img 
-              src="https://res.cloudinary.com/ptkj/image/upload/v1615757635/aces/td14hmkzhh6wpj0tlay7.jpg"
+              src={user.license.logoUrl}
               width="100%"
               height="100%"
               className="object-contain rounded-full"

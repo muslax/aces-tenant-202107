@@ -12,12 +12,12 @@ const NewProjectPage = () => {
 
   return <>
     <Head>
-      <title>Dashboard - ACES</title>
+      <title>New Project - ACES</title>
     </Head>
 
     <NewProject user={user} />
 
-    <Prefetch uri={`${APIROUTES.GET.MODULES}`} />
+    {/* <Prefetch uri={`${APIROUTES.GET.MODULES}`} /> */}
   </>
 }
 
