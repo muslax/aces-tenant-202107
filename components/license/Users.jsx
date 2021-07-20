@@ -9,6 +9,7 @@ import { APIROUTES } from "config/routes";
 import PageHeading from "./PageHeading";
 import { ItemContainer } from "./ItemContainer"
 import FixedOverlay from 'components/FixedOverlay';
+import PageLoading from "components/PageLoading";
 
 const Users = ({ user }) => {
   const { users, isError, isLoading, mutate: mutateUsers } = useUsers()
@@ -74,7 +75,7 @@ const Users = ({ user }) => {
     setModal(null);
   }
 
-  if (isLoading) return <>Loading...</>
+  if (isLoading) return <PageLoading />
 
   const icon = <UserCircleIcon className="h-6 w-6 text-gray-600"/>;
   const iconSelf = <UserCircleIcon className="h-6 w-6 text-yellow-500"/>;

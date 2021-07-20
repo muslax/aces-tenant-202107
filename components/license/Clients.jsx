@@ -7,13 +7,14 @@ import useClients from "hooks/useClients"
 
 import PageHeading from './PageHeading'
 import { ItemContainer } from "./ItemContainer"
+import PageLoading from 'components/PageLoading'
 
 const Clients = ({ user }) => {
   const { clients, isError, isLoading, mutate: mutateClients } = useClients(true)
 
   const [vStack, setVStack] = useState([])
 
-  if (isLoading) return <>Loading...</>
+  if (isLoading) return <PageLoading />
 
   const icon = <IdentificationIcon className="h-6 w-6 text-yellow-400"/>;
 

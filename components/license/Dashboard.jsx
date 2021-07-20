@@ -3,12 +3,13 @@ import Link from "next/link"
 import { FolderIcon } from "@heroicons/react/solid"
 
 import PageHeading from "./PageHeading"
+import PageLoading from "components/PageLoading"
 import { ItemContainer } from "./ItemContainer"
 
 const Dashboard = ({ user }) => {
   const { projects, isError, isLoading, mutate: mutateProjects } = useProjects()
 
-  if (isLoading) return <>Loading...</>
+  if (isLoading) return <PageLoading />
 
   const icon = <FolderIcon className="h-6 w-6 text-blue-300"/>;
 

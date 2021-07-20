@@ -1,11 +1,12 @@
 import useLicense from "hooks/useLicense"
 
 import PageHeading from "./PageHeading"
+import PageLoading from "components/PageLoading"
 
 const License = ({ user }) => {
   const { license, isError, isLoading, mutate: mutateLicense } = useLicense()
 
-  if (isLoading) return <>Loading...</>
+  if (isLoading) return <PageLoading />
 
   return <>
     <PageHeading heading="License Info" />
