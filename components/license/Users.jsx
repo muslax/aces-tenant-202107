@@ -77,97 +77,93 @@ const Users = ({ user }) => {
 
   if (isLoading) return <PageLoading />
 
+  function Icon({ person }) {
+    return person.username == user.username
+    ? <UserCircleIcon className="h-5 w-5 text-blue-500"/>
+    : <UserCircleIcon className="h-5 w-5 text-gray-400"/>
+  }
+
   const icon = <UserCircleIcon className="h-6 w-6 text-gray-600"/>;
   const iconSelf = <UserCircleIcon className="h-6 w-6 text-yellow-500"/>;
 
   return <>
     <PageHeading heading="Users" />
 
-    <div className="flex flex-col space-y-2">
+    <div className="rounded-md border border-blue-200 hover:border-blue-300 hover:shadow-sm">
       {users.map(person => (
-        <ItemContainer 
-          key={person._id} 
-          bg={person.username == user.username ? "bg-yellow-50 bg-opacity-20" : ""}
-          icon={person.username == user.username ? iconSelf : icon}
-        >
-          <div className="flex">
-            <div className="h-6 flex-grow text-base text-gray-600 font-semibold mb-1">{person.fullname}</div>
-          </div>
-          {/* email */}
-          <div className=" text-gray-600">
-            {person.email}
-          </div>
-          <div className="pt-2 pb-1">
+        <div key={person._id} className="flex items-center space-x-2 sm:space-x-3 px-4 sm:px-5 py-4 border-b border-blue-200 last:border-none">
+          <Icon person={person} />
+          <div className="text-gray-600 font-medium">{person.fullname}</div>
+          <div className="flex-grow flex items-center justify-end space-x-3 text-xs">
+            {/* self */}
             {person.username == user.username && (
-              <button className="flex items-center space-x-1 text-xs text-yellow-500 hover:text-yellow-400">
+              <button className="flex items-center space-x-1 text-indigo-500 hover:text-indigo-400">
                 <KeyIcon className="w-4 h-4" />
                 <span>Change password</span>
               </button>
             )}
-            {/* Owner */}
-            {user.licenseOwner && user.username !== person.username && (
-              <div className="flex items-center space-x-3 text-xs">
-                {!person.disabled && <>
-                  <button 
-                    className="flex items-center space-x-1 text-yellow-500 hover:text-yellow-400">
-                    <KeyIcon className="w-4 h-4" />
-                    <span>Reset password</span>
-                  </button>
-                  <button 
-                    className="flex items-center space-x-1 text-gray-500 hover:text-gray-400"
-                    onClick={e => setToBeDisabled(person)}
-                  >
-                    <ExclamationCircleIcon className="w-4 h-4" />
-                    <span>Disable</span>
-                  </button>
-                </>}
-                {person.disabled && <>
-                  <button 
-                    className="flex items-center space-x-1 text-gray-500 hover:text-gray-400"
-                    onClick={e => setToBeActivated(person)}
-                  >
-                    <ExclamationCircleIcon className="w-4 h-4" />
-                    <span>Activate</span>
-                  </button>
-                </>}
+            {user.licenseOwner && person.username != user.username && <>
+              {!person.disabled && <>
                 <button 
-                  className="flex items-center space-x-1 text-pink-500 hover:text-pink-400"
-                  onClick={e => setToBeDeleted(person)}
+                  className="flex items-center space-x-1 text-yellow-500 hover:text-yellow-400">
+                  <KeyIcon className="w-4 h-4" />
+                  <span>Reset</span>
+                </button>
+                <button 
+                  className="flex items-center space-x-1 text-gray-500 hover:text-gray-400"
+                  onClick={e => setToBeDisabled(person)}
                 >
-                  <TrashIcon className="w-4 h-4" />
-                  <span>Delete</span>
+                  <ExclamationCircleIcon className="w-4 h-4" />
+                  <span>Disable</span>
                 </button>
-              </div>
-            )}
-            {/* else */}
-            {!user.licenseOwner && user.username !== person.username && (
-              <div className="flex items-center space-x-3 text-xs">
-                {!person.disabled && <>
-                  <button disabled className="flex items-center space-x-1 text-gray-300">
-                    <KeyIcon className="w-4 h-4" />
-                    <span>Reset password</span>
-                  </button>
-                  <button disabled className="flex items-center space-x-1 text-gray-300">
-                    <ExclamationCircleIcon className="w-4 h-4" />
-                    <span>Disable</span>
-                  </button>
-                </>}
-                {person.disabled && <>
-                  <button disabled className="flex items-center space-x-1 text-gray-300">
-                    <ExclamationCircleIcon className="w-4 h-4" />
-                    <span>Activate</span>
-                  </button>
-                </>}  
-                <button disabled className="flex items-center space-x-1 text-gray-300">
-                  <TrashIcon className="w-4 h-4" />
-                  <span>Delete</span>
+              </>}
+              {person.disabled && <>
+                <button disabled
+                  className="flex items-center space-x-1 text-gray-300">
+                  <KeyIcon className="w-4 h-4" />
+                  <span>Reset</span>
                 </button>
-              </div>
-            )}
+                <button 
+                  className="flex items-center space-x-1 text-gray-500 hover:text-gray-400"
+                  onClick={e => setToBeActivated(person)}
+                >
+                  <ExclamationCircleIcon className="w-4 h-4" />
+                  <span>Activate</span>
+                </button>
+              </>}
+              <button 
+                className="flex items-center space-x-1 text-pink-500 hover:text-pink-400"
+                onClick={e => setToBeDeleted(person)}
+              >
+                <TrashIcon className="w-4 h-4" />
+                <span>Delete</span>
+              </button>
+            </>}
+            {!user.licenseOwner && user.username !== person.username && <>
+              <button disabled
+                className="flex items-center space-x-1 text-gray-300">
+                <KeyIcon className="w-4 h-4" />
+                <span>Reset</span>
+              </button>
+              <button disabled
+                className="flex items-center space-x-1 text-gray-300"
+              >
+                <ExclamationCircleIcon className="w-4 h-4" />
+                <span>{person.disabled ? 'Activate' : 'Disable'}</span>
+              </button>
+              <button disabled
+                className="flex items-center space-x-1 text-gray-300"
+              >
+                <TrashIcon className="w-4 h-4" />
+                <span>Delete</span>
+              </button>
+            </>}
           </div>
-        </ItemContainer>
+        </div>
       ))}
     </div>
+
+    
     
     {toBeDeleted && <EditDialog 
       person={toBeDeleted}
@@ -186,7 +182,7 @@ const Users = ({ user }) => {
     {toBeActivated && <EditDialog 
       person={toBeActivated}
       action="activate"
-      onCancel={e => setToBeDisabled(null)}
+      onCancel={e => setToBeActivated(null)}
       onOke={activateUser}
     />}
   </>
@@ -227,3 +223,93 @@ const EditDialog = ({ person, action, onCancel, onOke }) => {
     </FixedOverlay>
   )
 }
+
+
+/*
+<div className="flex flex-col space-y-2">
+      {users.map(person => (
+        <ItemContainer 
+          key={person._id} 
+          bg={person.username == user.username ? "bg-yellow-50 bg-opacity-20" : ""}
+          icon={person.username == user.username ? iconSelf : icon}
+        >
+          <div className="flex">
+            <div className="h-6 flex-grow text-base text-gray-600 font-semibold mb-1">{person.fullname}</div>
+          </div>
+
+          <div className=" text-gray-600">
+            {person.email}
+          </div>
+          <div className="pt-2 pb-1">
+            {person.username == user.username && (
+              <button className="flex items-center space-x-1 text-xs text-yellow-500 hover:text-yellow-400">
+                <KeyIcon className="w-4 h-4" />
+                <span>Change password</span>
+              </button>
+            )}
+
+            {user.licenseOwner && user.username !== person.username && (
+              <div className="flex items-center space-x-3 text-xs">
+                {!person.disabled && <>
+                  <button 
+                    className="flex items-center space-x-1 text-yellow-500 hover:text-yellow-400">
+                    <KeyIcon className="w-4 h-4" />
+                    <span>Reset password</span>
+                  </button>
+                  <button 
+                    className="flex items-center space-x-1 text-gray-500 hover:text-gray-400"
+                    onClick={e => setToBeDisabled(person)}
+                  >
+                    <ExclamationCircleIcon className="w-4 h-4" />
+                    <span>Disable</span>
+                  </button>
+                </>}
+                {person.disabled && <>
+                  <button 
+                    className="flex items-center space-x-1 text-gray-500 hover:text-gray-400"
+                    onClick={e => setToBeActivated(person)}
+                  >
+                    <ExclamationCircleIcon className="w-4 h-4" />
+                    <span>Activate</span>
+                  </button>
+                </>}
+                <button 
+                  className="flex items-center space-x-1 text-pink-500 hover:text-pink-400"
+                  onClick={e => setToBeDeleted(person)}
+                >
+                  <TrashIcon className="w-4 h-4" />
+                  <span>Delete</span>
+                </button>
+              </div>
+            )}
+
+            {!user.licenseOwner && user.username !== person.username && (
+              <div className="flex items-center space-x-3 text-xs">
+                {!person.disabled && <>
+                  <button disabled className="flex items-center space-x-1 text-gray-300">
+                    <KeyIcon className="w-4 h-4" />
+                    <span>Reset password</span>
+                  </button>
+                  <button disabled className="flex items-center space-x-1 text-gray-300">
+                    <ExclamationCircleIcon className="w-4 h-4" />
+                    <span>Disable</span>
+                  </button>
+                </>}
+                {person.disabled && <>
+                  <button disabled className="flex items-center space-x-1 text-gray-300">
+                    <ExclamationCircleIcon className="w-4 h-4" />
+                    <span>Activate</span>
+                  </button>
+                </>}  
+                <button disabled className="flex items-center space-x-1 text-gray-300">
+                  <TrashIcon className="w-4 h-4" />
+                  <span>Delete</span>
+                </button>
+              </div>
+            )}
+          </div>
+        </ItemContainer>
+      ))}
+    </div>
+
+*/

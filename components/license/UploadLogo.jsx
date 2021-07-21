@@ -59,7 +59,7 @@ const UploadLogo = ({ user }) => {
   }
 
   const cancel = (e) => {
-    router.push(ROUTES.License)
+    router.push('/settings')
   } 
 
   return <>
@@ -131,7 +131,7 @@ const UploadLogo = ({ user }) => {
       </div>
       {!submitting && uploaded && (
         <div className="text-center mt-4">
-          <Link href={ROUTES.License}>
+          <Link href={'/settings'}>
             <a className="inline-flex text-sm font-bold ml-2 rounded border border-gray-300 hover:bg-white hover:border-gray-400 focus:outline-none hover:shadow focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 px-3 py-1">
               SELESAI
             </a>

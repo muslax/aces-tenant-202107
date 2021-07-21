@@ -48,7 +48,7 @@ export default function LicenseLayout({ children, isForm }) {
         {isForm && <LicenseNav user={user} formLabel={isForm} />}
       </div>
 
-      <main className="max-w-4xl mx-auto px-5 pb-24">
+      <main className="max-w-4xl mx-auto px-5 pb-36">
         {children}
       </main>
     </div>

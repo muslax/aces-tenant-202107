@@ -19,6 +19,7 @@ const Clients = ({ user }) => {
   const icon = <IdentificationIcon className="h-6 w-6 text-yellow-400"/>;
 
   return <>
+    <div className="h-3"></div>
     <PageHeading heading="Your Clients" />
 
     <div className="flex flex-col space-y-2">

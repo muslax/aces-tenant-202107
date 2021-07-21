@@ -1,5 +1,7 @@
-import useProjects from "hooks/useProjects"
+import { useRouter } from "next/router"
 import Link from "next/link"
+
+import useProjects from "hooks/useProjects"
 import { FolderIcon } from "@heroicons/react/solid"
 
 import PageHeading from "./PageHeading"
@@ -7,6 +9,8 @@ import PageLoading from "components/PageLoading"
 import { ItemContainer } from "./ItemContainer"
 
 const Dashboard = ({ user }) => {
+  const router = useRouter()
+
   const { projects, isError, isLoading, mutate: mutateProjects } = useProjects()
 
   if (isLoading) return <PageLoading />
@@ -14,7 +18,18 @@ const Dashboard = ({ user }) => {
   const icon = <FolderIcon className="h-6 w-6 text-blue-300"/>;
 
   return <>
-    <PageHeading heading="ACES Projects" />
+    <div className="h-3"></div>
+    <PageHeading heading="ACES Projects">
+      {user.licenseOwner && (
+        <button 
+          className="group h-9 flex items-center rounded border text-blue-500 border-blue-300 hover:shadow-sm hover:border-blue-400 pl-2 pr-3"
+          onClick={e => router.push('/new-project')}
+        >
+          <FolderIcon className="w-5 h-5 text-yellow-400 group-hover:text-pink-400" />
+          <span className="h-8 flex items-center font-semibold pl-2">New Project</span>
+        </button>
+      )}
+    </PageHeading>
 
     <div className="flex flex-col space-y-2">
       {projects.map(p => (

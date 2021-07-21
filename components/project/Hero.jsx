@@ -3,7 +3,7 @@ import { CalendarIcon } from '@heroicons/react/outline';
 
 const Hero = ({ project, title, isIndex }) => {
   return <>
-    <div className="pt-2 pb-5">
+    <div className="pt-3 pb-5 border-b">
       <div className="h-12 pb-1 flex items-end">
         {isIndex && (
           <h2 className="text-2xl text-gray-400 font-medium truncate">
@@ -22,13 +22,13 @@ const Hero = ({ project, title, isIndex }) => {
       </div>
     
       {isIndex && (
-        <div className="flex flex-col space-y-px font-medium">
+        <div className="h-16 bg--yellow-50 flex flex-col space-y-2 font-medium">
           <div className="flex items-center space-x-3">
             <IdentificationIcon className="w-5 h-5 text-yellow-400" />
             <div className="text-gray-400-">{project.client.name}, {project.client.city}</div>
           </div>
 
-          <div className="flex items-center space-x-3">
+          {/* <div className="flex items-center space-x-3">
             <CalendarIcon className="w-5 h-5 text-blue-400" />
             <div className="">Kontrak: {project.contractDate}</div>
           </div>
@@ -36,11 +36,16 @@ const Hero = ({ project, title, isIndex }) => {
           <div className="flex items-center space-x-3">
             <ShieldCheckIcon className="w-5 h-5 text-gray-500" />
             <div className="">Admin: {project.admin.fullname}</div>
+          </div> */}
+
+          <div className="h-9 bg--gray-50 flex items-center pt-2">
+            <button className="h-7 bg-gray-400 text-white text-xs font-semibold px-2">Batch Info</button>
+            <button className="h-7 bg-gray-200 text-xs font-semibold px-2">Project Info</button>
           </div>
         </div>
       )}
       {!isIndex && (
-        <div className="flex flex-col space-y-px font-medium">
+        <div className="h-16 flex flex-col space-y-px font-medium">
           <div className="flex items-center space-x-3">
             <FolderIcon className="w-5 h-5 text-green-500" />
             <div className="">{project.title}</div>

@@ -32,11 +32,11 @@ const NewUser = ({ user }) => {
 
     mutate(APIROUTES.GET.USERS)
     setSubmitting(false)
-    router.push(ROUTES.Users)
+    router.push('/settings')
   }
 
   const cancel = (e) => {
-    router.push(ROUTES.Users)
+    router.push('/settings')
   } 
 
   const isReady = () => {
@@ -141,7 +141,7 @@ const NewUser = ({ user }) => {
             onBlur={e => {
               const val = e.target.value.trim()
               setUsername(val)
-              if (val.length == 0) {
+              if (val.length < 6) {
                 e.currentTarget.className = inputError
               } else {
                 e.currentTarget.className = inputStyle

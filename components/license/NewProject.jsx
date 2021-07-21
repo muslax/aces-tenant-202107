@@ -282,12 +282,12 @@ const NewProject = ({ user }) => {
         )}
       </div>
 
-      <pre>
+      {/* <pre>
         JUDUL:{title} KONTRAK:{contractDate}<br/>
         CID: {cid}<br/>
         ORG:{clientName} ADDR:{clientAddress} CITY:{clientCity}
-      </pre>
-      <pre>{JSON.stringify(clients, null, 2)}</pre>
+      </pre> */}
+      {/* <pre>{JSON.stringify(clients, null, 2)}</pre> */}
       
       {/* <pre>{JSON.stringify(user, null, 2)}</pre>
       <pre>{JSON.stringify(user, null, 2)}</pre>

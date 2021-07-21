@@ -16,7 +16,7 @@ const ProjectNav = () => {
   return <>
     <div className="relative bg-white">
       <div className="max-w-4xl mx-auto px-5">
-        <nav className="flex space-x-5 sm:space-x-6 md:space-x-8 border-b border-green-500 border-opacity-70">
+        <nav className="flex space-x-4 xs:space-x-5 sm:space-x-6 md:space-x-8 border-b border-green-500 border-opacity-70">
           {navigation.map(({ label, href }) => (
             <Link key={href} href={href}>
               <a className={`text-green-600 pt-3 pb-2 border-b-4 
