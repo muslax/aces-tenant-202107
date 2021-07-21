@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react"
-import { BeakerIcon, UsersIcon, StatusOnlineIcon } from '@heroicons/react/solid'
-import { CheckCircleIcon } from '@heroicons/react/outline'
 
 import useBatches from "hooks/useBatches"
 import useModules from "hooks/useModules"
 import { generatePOSTData, getLocalStorageBatch } from "lib/utils"
+import fetchJson from "lib/fetchJson"
+import { APIROUTES } from "config/routes"
+import useUsers from "hooks/useUsers"
 
 import PageLoading from "components/PageLoading"
 import Hero from "./Hero"
@@ -12,9 +13,7 @@ import Subhead from "./Subhead"
 import BatchInfo from "./BatchInfo"
 import BatchTable from "./BatchTable"
 import ProjectInfo from "./ProjectInfo"
-import fetchJson from "lib/fetchJson"
-import { APIROUTES } from "config/routes"
-import useUsers from "hooks/useUsers"
+import BatchMissing from "./BatchMissing"
 
 const Overview = ({ user, project }) => {
   const pid = project._id
@@ -23,8 +22,10 @@ const Overview = ({ user, project }) => {
   const { users, isLoading: usersLoading } = useUsers()
 
   const [info, setInfo] = useState("batch")
+  const [batchIsMissing, setBatchIsMissing] = useState(false)
   const [editProjectInfo, setEditProjectInfo] = useState(false)
   const [currentBatch, setCurrentBatch] = useState(getLocalStorageBatch(pid))
+
   const [batchForm, setBatchForm] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [title, setTitle] = useState('')
@@ -45,10 +46,11 @@ const Overview = ({ user, project }) => {
         })
   
         if (!found) { // Batch has been deleted
-          alert("Current Batch has been deleted from other device.")
-          const mostRecentBatch = batches[0]
-          setCurrentBatch(mostRecentBatch)
-          window.localStorage.setItem(pid, JSON.stringify(mostRecentBatch))
+          // alert("Current Batch has been deleted from other device.")
+          // const mostRecentBatch = batches[0]
+          // setCurrentBatch(mostRecentBatch)
+          // window.localStorage.setItem(pid, JSON.stringify(mostRecentBatch))
+          setBatchIsMissing(true)
         }
       }
     }
@@ -89,6 +91,14 @@ const Overview = ({ user, project }) => {
   const inputError = `peer relative text-sm font--medium w-full h-8 px-2 pb-2 
   caret-blue-400 border border-red-300 focus:border-blue-200 rounded bg-gray-50 focus:bg-blue-50 focus:bg-opacity-70 focus:ring-0`
 
+  if (batchIsMissing) return (
+    <BatchMissing 
+      pid={project._id} 
+      setCurrentBatch={setCurrentBatch} 
+      callback={setBatchIsMissing} 
+    />
+  )
+  
   return <>
     <Hero project={project} isIndex />
 
@@ -116,7 +126,7 @@ const Overview = ({ user, project }) => {
         </>}
       </div>
     </div>
-
+    
     {info == "batch" && (
       <>
         <Subhead title="Active Batch">

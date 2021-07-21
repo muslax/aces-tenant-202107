@@ -1,7 +1,6 @@
-import { EyeIcon, FolderIcon, IdentificationIcon, ShieldCheckIcon, StatusOnlineIcon } from '@heroicons/react/solid';
-import { CalendarIcon } from '@heroicons/react/outline';
+import { FolderIcon, IdentificationIcon, StatusOnlineIcon } from '@heroicons/react/solid';
 
-const Hero = ({ project, title, isIndex }) => {
+const Hero = ({ project, batch, title, isIndex }) => {
   return <>
     <div className="pt-3 pb-5 border--b">
       <div className="h-12 pb-1 flex items-end">
@@ -58,7 +57,7 @@ const Hero = ({ project, title, isIndex }) => {
 
           <div className="flex items-center space-x-3">
             <StatusOnlineIcon className="w-5 h-5 text-pink-500" />
-            <div className="">Batch: [BATCH_TITLE]</div>
+            <div className="">Batch: {batch?.title}</div>
           </div>
         </div>
       )}
