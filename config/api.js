@@ -33,6 +33,7 @@ export const API = {
 
     SAVE_NEW_BATCH:         'save-new-batch',
     SAVE_TEST_MODE:         'save-test-mode',
+    RENAME_BATCH:           'rename-batch',
     UPDATE_BATCH:           'update-batch',
     DELETE_BATCH:           'delete-batch',
     SAVE_MODULES:           'save-modules',

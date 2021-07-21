@@ -3,7 +3,7 @@ import { CalendarIcon } from '@heroicons/react/outline';
 
 const Hero = ({ project, title, isIndex }) => {
   return <>
-    <div className="pt-3 pb-5 border-b">
+    <div className="pt-3 pb-5 border--b">
       <div className="h-12 pb-1 flex items-end">
         {isIndex && (
           <h2 className="text-2xl text-gray-400 font-medium truncate">
@@ -38,9 +38,9 @@ const Hero = ({ project, title, isIndex }) => {
             <div className="">Admin: {project.admin.fullname}</div>
           </div> */}
 
-          <div className="h-9 bg--gray-50 flex items-center pt-2">
-            <button className="h-7 bg-gray-400 text-white text-xs font-semibold px-2">Batch Info</button>
-            <button className="h-7 bg-gray-200 text-xs font-semibold px-2">Project Info</button>
+          <div className="h-9 bg-pink--200 flex items-center pt-2">
+            {/* <button className="h-7 bg-gray-400 text-white text-xs font-semibold px-2">Batch Info</button> */}
+            {/* <button className="h-7 bg-gray-200 text-xs font-semibold px-2">Project Info</button> */}
           </div>
         </div>
       )}
