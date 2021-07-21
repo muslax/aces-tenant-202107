@@ -16,7 +16,7 @@ const ProjectHeader = ({ user, isForm }) => {
 
   return <>
     <div id="project-header" 
-    className="fixed z-50 top-0 left-0 right-0 bg-red-100 xs:bg-gray-100 bg-gradient-to-b from-white"
+    className="fixed z-50 top-0 left-0 right-0 bg-gray-50"
     >
       <div className={`max-w-4xl mx-auto px-5 py-5`}>
         <div className="flex h-7 items-center space-x-3">

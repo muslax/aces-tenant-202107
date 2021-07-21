@@ -42,6 +42,8 @@ const Personae = ({ user, project, localBatch }) => {
     <Subhead title="Daftar Persona">
       XXX
     </Subhead>
+
+    <pre>{JSON.stringify(personae, null, 2)}</pre>
   </>
 }
 
