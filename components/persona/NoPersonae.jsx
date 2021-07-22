@@ -1,8 +1,17 @@
+import Head from "next/head";
 import Link from "next/link"
 
-export default function NoPersonae({ project, isAdmin }) {
-  return (
-    <div className="border-b -border-gray-300 text-center px-5 py-6">
+import Hero from "components/project/Hero";
+
+export default function NoPersonae({ project, batch, isAdmin }) {
+  return <>
+    <Head>
+      <title>Personae: {project.title} - ACES</title>
+    </Head>
+
+    <Hero project={project} batch={batch} title="ACES Persona" />
+
+    <div id="no-personae" className="border-t -border-gray-300 text-center px-5 py-6">
       <h2 className="text-lg text-pink-500  font-bold mb-7">
         Belum ada daftar peserta
       </h2>
@@ -31,5 +40,5 @@ export default function NoPersonae({ project, isAdmin }) {
       )}
 
     </div>
-  )
+  </>
 }

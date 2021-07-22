@@ -1,35 +1,37 @@
-import { useEffect, useState } from "react"
-
-import useBatch from "hooks/useBatch"
 import useBatchPersonae from "hooks/useBatchPersonae"
-import { getLocalStorageBatch } from "lib/utils"
 
-import PageLoading from "components/PageLoading"
-import BatchMissing from "components/project/BatchMissing"
+import PageLoading from "components/project/PageLoading"
 import Hero from "components/project/Hero"
 import Subhead from "components/project/Subhead"
 import NoPersonae from "./NoPersonae"
 
 const Personae = ({ user, project, batch, isLoading }) => {
   const isAdmin = user.username == project.admin.username
-  const { personae: persons, isLoading: personsLoading, isError: personsError, mutate: mutatePeronae } = useBatchPersonae(batch._id)
+  const { 
+    personae: persons, 
+    isLoading: personsLoading, 
+    isError: personsError, 
+    mutate: mutatePeronae 
+  } = useBatchPersonae(batch._id)
 
-  const hero = <Hero project={project} title="ACES Persona" batch={batch} />
+  if (isLoading || personsLoading) {
+    return <PageLoading 
+      project={project} 
+      batch={batch} 
+      title="ACES Persona" 
+    />
+  }
 
-  if (isLoading || personsLoading) return <>
-    {hero}
-    <PageLoading />
-  </>
+  if (persons.length == 0) {
+    return <NoPersonae 
+      project={project} 
+      batch={batch}
+      isAdmin={isAdmin} 
+    />
+  }
 
-if (batch.modules.length == 0) {
   return <>
-    {hero}
-    <NoPersonae project={project} isAdmin={isAdmin} />
-  </>
-}
-
-  return <>
-    {hero}
+    <Hero project={project} title="ACES Persona" batch={batch} />
 
     <Subhead title="Daftar Persona">
       XXX

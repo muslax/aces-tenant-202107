@@ -1,27 +1,28 @@
 import { useEffect, useState } from "react"
 
+import useBatches from "hooks/useBatches"
 import useModules from "hooks/useModules"
 import { generatePOSTData, getLocalStorageBatch } from "lib/utils"
 import fetchJson from "lib/fetchJson"
 import { APIROUTES } from "config/routes"
 import useUsers from "hooks/useUsers"
 
+import PageLoading from "components/PageLoading"
 import Hero from "./Hero"
 import Subhead from "./Subhead"
 import BatchInfo from "./BatchInfo"
 import BatchTable from "./BatchTable"
 import ProjectInfo from "./ProjectInfo"
-import PageLoading from "components/project/PageLoading"
+import BatchMissing from "./BatchMissing"
 
-const Overview = ({ user, project, batches, mutate }) => {
+const Overview = ({ user, project }) => {
   const pid = project._id
-  const isAdmin = user.username == project.admin.username
-
-  const { modules, isLoading: modulesLoading } = useModules()
+  const { batches, isError, isLoading, mutate: mutateBatches } = useBatches(pid)
+  const { modules, isLoading: mLoading } = useModules()
   const { users, isLoading: usersLoading } = useUsers()
 
   const [info, setInfo] = useState("batch")
-  // const [batchIsMissing, setBatchIsMissing] = useState(false)
+  const [batchIsMissing, setBatchIsMissing] = useState(false)
   const [editProjectInfo, setEditProjectInfo] = useState(false)
   const [currentBatch, setCurrentBatch] = useState(getLocalStorageBatch(pid))
 
@@ -29,6 +30,40 @@ const Overview = ({ user, project, batches, mutate }) => {
   const [submitting, setSubmitting] = useState(false)
   const [title, setTitle] = useState('')
   const [date1, setDate1] = useState('')
+
+  useEffect(() => {
+    if (batches && batches.length > 0) { // setCurrentBatch(batches[0]) // TEMPORARY, JUST FOR TEST
+      if (currentBatch && currentBatch._id) {
+        let found = false
+  
+        batches.forEach(b => {
+          // Update localStorage
+          if (b._id == currentBatch._id) {
+            found = true
+            window.localStorage.setItem(pid, JSON.stringify(b))
+            setCurrentBatch(getLocalStorageBatch(pid))
+          }
+        })
+  
+        if (!found) { // Batch has been deleted
+          // alert("Current Batch has been deleted from other device.")
+          // const mostRecentBatch = batches[0]
+          // setCurrentBatch(mostRecentBatch)
+          // window.localStorage.setItem(pid, JSON.stringify(mostRecentBatch))
+          setBatchIsMissing(true)
+        }
+      }
+    }
+  }, [batches])
+
+  if (isLoading || mLoading) return <PageLoading />
+
+  // Set default localStorage batch
+  if (getLocalStorageBatch(pid) === false) {
+    const mostRecentBatch = batches[0]
+    setCurrentBatch(mostRecentBatch)
+    window.localStorage.setItem(pid, JSON.stringify(mostRecentBatch))
+  }
 
   function isReady() {
     return title.length > 5 && date1.length == 10
@@ -43,7 +78,7 @@ const Overview = ({ user, project, batches, mutate }) => {
       date1: date1,
     }))
 
-    mutate()
+    mutateBatches()
     setTitle('')
     setDate1('')
     setBatchForm(false)
@@ -56,13 +91,13 @@ const Overview = ({ user, project, batches, mutate }) => {
   const inputError = `peer relative text-sm font--medium w-full h-8 px-2 pb-2 
   caret-blue-400 border border-red-300 focus:border-blue-200 rounded bg-gray-50 focus:bg-blue-50 focus:bg-opacity-70 focus:ring-0`
 
-  if (usersLoading || modulesLoading) {
-    return <PageLoading 
-      project={project} 
-      batch={null}
-      isIndex
+  if (batchIsMissing) return (
+    <BatchMissing 
+      pid={project._id} 
+      setCurrentBatch={setCurrentBatch} 
+      callback={setBatchIsMissing} 
     />
-  }
+  )
   
   return <>
     <Hero project={project} isIndex />
@@ -92,46 +127,49 @@ const Overview = ({ user, project, batches, mutate }) => {
       </div>
     </div>
     
-    {info == "batch" && <>
-      <Subhead title="Active Batch">
-        <select className="project-select leading-none pr-10"
-          value={currentBatch._id}
-          onChange={e => {
-            const batch = batches.filter(b => b._id == e.target.value)[0]
-            window.localStorage.setItem(pid, JSON.stringify(batch))
-            setCurrentBatch(batch)
-          }}
-        >
-          {batches.map(({ _id, title }) => (
-            <option key={_id} value={_id}>{title}</option>
-          ))}
-        </select>
-      </Subhead>
-
-      {currentBatch && <BatchInfo batch={currentBatch} modules={modules} />}
-    </>}
-
-    {info != "batch" && <>
-      <Subhead title="Project Info">
-        {!editProjectInfo 
-        && (user.licenseOwner || user.username == project.admin.username )
-        && (
-          <button 
-            className="project-button px-4"
-            onClick={e => {
-              setEditProjectInfo(!editProjectInfo)
+    {info == "batch" && (
+      <>
+        <Subhead title="Active Batch">
+          <select className="project-select leading-none pr-10"
+            value={currentBatch._id}
+            onChange={e => {
+              const batch = batches.filter(b => b._id == e.target.value)[0]
+              window.localStorage.setItem(pid, JSON.stringify(batch))
+              setCurrentBatch(batch)
             }}
-          >Edit Info</button>
-        )}
-      </Subhead>
-      <ProjectInfo 
-        user={user} 
-        users={users}
-        project={project}
-        editing={editProjectInfo}
-        setEditing={setEditProjectInfo}
-      />
-    </>}
+          >
+            {batches.map(({ _id, title }) => (
+              <option key={_id} value={_id}>{title}</option>
+            ))}
+          </select>
+        </Subhead>
+
+        {currentBatch && <BatchInfo batch={currentBatch} modules={modules} />}
+      </>
+    )}
+    {info != "batch" && (
+      <>
+        <Subhead title="Project Info">
+          {!editProjectInfo 
+          && (user.licenseOwner || user.username == project.admin.username )
+          && (
+            <button 
+              className="project-button px-4"
+              onClick={e => {
+                setEditProjectInfo(!editProjectInfo)
+              }}
+            >Edit Info</button>
+          )}
+        </Subhead>
+        <ProjectInfo 
+          user={user} 
+          users={users}
+          project={project}
+          editing={editProjectInfo}
+          setEditing={setEditProjectInfo}
+        />
+      </>
+    )}
 
     <br/><br/>
 

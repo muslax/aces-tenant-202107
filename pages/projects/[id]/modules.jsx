@@ -15,9 +15,6 @@ import PageLoading from "components/PageLoading";
 import ProjectNotFound from "components/ProjectNotFound";
 import BatchMissing from "components/project/BatchMissing";
 
-// Project routes must provide user and project props
-// to its main component
-
 const ModulesPage = () => {
   const { user } = useUser()
   const router = useRouter()
@@ -51,7 +48,7 @@ const ModulesPage = () => {
     }
   }, [batch])
   
-  if (isLoading) return <PageLoading />
+  if (isLoading) return null
 
   if (isError) return <ProjectNotFound pid={pid} />
 

@@ -5,19 +5,13 @@ import { APIROUTES, ROUTES } from "config/routes"
 import useProject from "hooks/useProject"
 import useUser from "hooks/useUser"
 import useBatch from "hooks/useBatch"
-import useModules from "hooks/useModules"
 import { getLocalStorageBatch } from "lib/utils"
 
 import ProjectLayout from "components/layout/ProjectLayout"
 import Deployment from "components/deployment/Deployment"
-import Prefetch from "components/Prefetch"
 import { useEffect, useState } from "react"
-import PageLoading from "components/PageLoading"
 import ProjectNotFound from "components/ProjectNotFound"
 import BatchMissing from "components/project/BatchMissing"
-
-// Project routes must provide user and project props
-// to its main component
 
 const DeploymentPage = () => {
   const { user } = useUser()
@@ -38,7 +32,7 @@ const DeploymentPage = () => {
     }
   }, [batch])
   
-  if (isLoading) return <PageLoading />
+  if (isLoading) return null
 
   if (isError) return <ProjectNotFound pid={pid} />
 

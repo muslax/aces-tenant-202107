@@ -13,9 +13,6 @@ import Personae from "components/persona/Personae";
 import Prefetch from "components/Prefetch";
 import BatchMissing from "components/project/BatchMissing";
 
-// Project routes must provide user and project props
-// to its main component
-
 const PersonaPage = () => {
   const { user } = useUser()
   const router = useRouter()

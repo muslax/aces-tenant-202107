@@ -342,7 +342,7 @@ const ChangePasswordDialog = ({ onClose }) => {
                 <input 
                   type="password"
                   disabled={submitting}
-                  autoFocus="true"
+                  autoFocus={true}
                   className={inputStyle}
                   value={oldPassword}
                   onChange={e => setOldPassword(e.target.value)}

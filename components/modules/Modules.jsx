@@ -1,14 +1,11 @@
-import { useEffect, useState } from "react"
 import Link from "next/link"
 
-import useBatch from "hooks/useBatch"
 import useModules from "hooks/useModules"
-import { getBatchModules, getLocalStorageBatch } from "lib/utils"
+import { getBatchModules } from "lib/utils"
 
-import PageLoading from "components/PageLoading"
+import PageLoading from "components/project/PageLoading"
 import Hero from "components/project/Hero"
 import Subhead from "components/project/Subhead"
-import BatchMissing from "components/project/BatchMissing"
 import NoModules from "./NoModules"
 
 const Modules = ({ user, project, batch }) => { 
@@ -16,16 +13,20 @@ const Modules = ({ user, project, batch }) => {
   const { modules, isError: moduleError, isLoading: modulesLoading } = useModules()
   const batchModules = getBatchModules(batch, modules);
   
-  // localBatch comes from localStorage, might be false
-  // Or might be has just been deleted
-
-  if (modulesLoading) return <PageLoading />
+  if (modulesLoading) {
+    return <PageLoading 
+      project={project} 
+      batch={batch}
+      title="ACES Modules"
+    />
+  }
 
   if (batch.modules.length == 0) {
-    return <>
-      <Hero project={project} title="ACES Modules" batch={batch} />
-      <NoModules project={project} isAdmin={isAdmin} />
-    </>
+    return <NoModules 
+      project={project} 
+      batch={batch}
+      isAdmin={isAdmin} 
+    />
   }
 
   return <>

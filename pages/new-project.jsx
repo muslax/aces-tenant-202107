@@ -5,10 +5,13 @@ import useUser from "hooks/useUser"
 
 import FormLayout from "components/layout/FormLayout"
 import NewProject from 'components/license/NewProject'
+import NotAuthorized from 'components/NotAuthorized'
 import Prefetch from 'components/Prefetch'
 
 const NewProjectPage = () => {
   const { user } = useUser()
+
+  if (!user.licenseOwner) return <NotAuthorized user={user} sendBackUrl={ROUTES.Dashboard} />
 
   return <>
     <Head>

@@ -95,7 +95,7 @@ const NewProject = ({ user }) => {
     router.push(ROUTES.Dashboard)
   }
 
-  if (!user.licenseOwner) return <NotAuthorized user={user} sendBackUrl={ROUTES.Dashboard} />
+  // if (!user.licenseOwner) return <NotAuthorized user={user} sendBackUrl={ROUTES.Dashboard} />
 
   const inputStyle = `peer relative text-sm font--medium w-full h-8 px-2 pb-2 
   caret-blue-400 border border-gray-200 focus:border-blue-200 rounded bg-gray-50 focus:bg-blue-50 focus:bg-opacity-70 focus:ring-0`
@@ -140,9 +140,9 @@ const NewProject = ({ user }) => {
             type="text" 
             value={title}
             disabled={submitting}
-            autoFocus="true"
-            autoComplete="false"
-            autoCorrect="false"
+            autoFocus={true}
+            autoComplete={false}
+            autoCorrect={false}
             className={`${inputStyle}`}
             onChange={e => setTitle(e.target.value)}
             onBlur={e => {
@@ -161,8 +161,8 @@ const NewProject = ({ user }) => {
           <textarea 
             disabled={submitting}
             value={description}
-            autoComplete="false"
-            autoCorrect="false"
+            autoComplete={false}
+            autoCorrect={false}
             className={`${inputStyle} h-auto -mb-1`}
             style={{ resize: 'none' }}
             onChange={e => setDescription(e.target.value)}
@@ -174,8 +174,8 @@ const NewProject = ({ user }) => {
             type="date" 
             value={contractDate}
             disabled={submitting}
-            autoComplete="false"
-            autoCorrect="false"
+            autoComplete={false}
+            autoCorrect={false}
             className={`${inputStyle}`}
             onChange={e => setContractDate(e.target.value)}
             onBlur={e => {
@@ -212,8 +212,8 @@ const NewProject = ({ user }) => {
             type="text" 
             disabled={submitting || selected._id != ''}
             value={clientName}
-            autoComplete="false"
-            autoCorrect="false"
+            autoComplete={false}
+            autoCorrect={false}
             className={`${inputStyle}`}
             onChange={e => setClientName(e.target.value)}
             onBlur={e => {
@@ -233,8 +233,8 @@ const NewProject = ({ user }) => {
             type="text" 
             disabled={submitting || selected._id != ''}
             value={clientAddress}
-            autoComplete="false"
-            autoCorrect="false"
+            autoComplete={false}
+            autoCorrect={false}
             className={`${inputStyle}`}
             onChange={e => setClientAddress(e.target.value)}
           />
@@ -245,8 +245,8 @@ const NewProject = ({ user }) => {
             type="text" 
             disabled={submitting || selected._id != ''}
             value={clientCity}
-            autoComplete="false"
-            autoCorrect="false"
+            autoComplete={false}
+            autoCorrect={false}
             className={`${inputStyle}`}
             onChange={e => setClientCity(e.target.value)}
             onBlur={e => {

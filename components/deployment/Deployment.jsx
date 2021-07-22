@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react"
 
-import useBatch from "hooks/useBatch"
 import useModules from "hooks/useModules"
 import useBatchPersonae from "hooks/useBatchPersonae"
-import { getBatchModules, getLocalStorageBatch } from "lib/utils"
+import { getBatchModules } from "lib/utils"
 
-import PageLoading from "components/PageLoading"
-import BatchMissing from "components/project/BatchMissing"
+import PageLoading from "components/project/PageLoading"
 import Hero from "components/project/Hero"
 import Subhead from "components/project/Subhead"
 
@@ -17,16 +15,16 @@ const Deployment = ({ user, project, batch }) => {
   
   const batchModules = getBatchModules(batch, modules);
 
-  const hero = <Hero project={project} title="ACES Persona" batch={batch} />
-
-  if (modulesLoading || personsLoading) return <>
-    {hero}
-    <PageLoading />
-  </>
+  if (modulesLoading || personsLoading) {
+    return <PageLoading 
+      project={project} 
+      batch={batch} 
+      title="Deployment" 
+    />
+  }
   
-
   return <>
-    {hero}
+    <Hero project={project} title="Deployment" batch={batch} />
     
     <Subhead title="Test Settings">
       XXX

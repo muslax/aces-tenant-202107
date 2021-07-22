@@ -12,7 +12,7 @@ const BatchMissing = ({ pid, setCurrentBatch, callback }) => {
       <title>ACES: Batch missing</title>
     </Head>
     
-    <div className="bg-green-500 bg-opacity-80 text-white h--64 px-7 pt-5 pb-7">
+    <div id="batch-missing" className="bg-green-500 bg-opacity-80 text-white h--64 px-7 pt-5 pb-7">
       <div className="max-w-xl">
         {localBatch && localBatch.title && (
           <p className="text-2xl font--bold mb-12">
@@ -27,23 +27,25 @@ const BatchMissing = ({ pid, setCurrentBatch, callback }) => {
           administrator proyek. Silakan memilih batch lain.
         </p>
         )}
-        <select 
-          className={`text-xl font--bold bg-green-500 bg-opacity-80 pr-16 
-          border-2 border-white focus:border-white focus:ring-0`}
-          onChange={e => {
-            if (e.target.value) {
-              const batch = batches.filter(b => b._id == e.target.value)[0]
-              window.localStorage.setItem(pid, JSON.stringify(batch))
-              setCurrentBatch(batch)
-              if (callback) callback(false)
-            }
-          }}
-        >
-          <option>- Pilih batch</option>
-          {batches && batches.map(batch => (
-            <option key={batch._id} value={batch._id}>Batch: {batch.title}</option>
-          ))}
-        </select>
+        <div className="bg-white max-w-sm">
+          <select 
+            className={`w-full truncate text-xl font--bold bg-green-500 bg-opacity-80 pr-16 
+            border-2 border-white focus:border-white focus:ring-0`}
+            onChange={e => {
+              if (e.target.value) {
+                const batch = batches.filter(b => b._id == e.target.value)[0]
+                window.localStorage.setItem(pid, JSON.stringify(batch))
+                setCurrentBatch(batch)
+                if (callback) callback(false)
+              }
+            }}
+          >
+            <option>- Pilih batch</option>
+            {batches && batches.map(batch => (
+              <option key={batch._id} value={batch._id}>Batch: {batch.title}</option>
+            ))}
+          </select>
+        </div>
       </div>
     </div>
     <style jsx>{`

@@ -90,9 +90,9 @@ const NewUser = ({ user }) => {
             value={fullname}
             placeholder="min. 3 karakter"
             disabled={submitting}
-            autoFocus="true"
-            autoComplete="false"
-            autoCorrect="false"
+            autoFocus={true}
+            autoComplete={false}
+            autoCorrect={false}
             className={`${inputStyle}`}
             onChange={e => setFullname(e.target.value)}
             onBlur={e => {
@@ -112,8 +112,8 @@ const NewUser = ({ user }) => {
             type="text" 
             value={email}
             disabled={submitting}
-            autoComplete="false"
-            autoCorrect="false"
+            autoComplete={false}
+            autoCorrect={false}
             className={`${inputStyle}`}
             onChange={e => setEmail(e.target.value)}
             onBlur={e => {
@@ -134,8 +134,8 @@ const NewUser = ({ user }) => {
             value={username}
             placeholder="min. 6 karakter"
             disabled={submitting}
-            autoComplete="false"
-            autoCorrect="false"
+            autoComplete={false}
+            autoCorrect={false}
             className={`${inputStyle}`}
             onChange={e => setUsername(e.target.value)}
             onBlur={e => {

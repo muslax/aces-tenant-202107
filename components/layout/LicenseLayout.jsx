@@ -55,7 +55,7 @@ export default function LicenseLayout({ children, isForm }) {
     <style jsx>{`
     #license-nav.scrolled {
       position: fixed;
-      top: 68px;
+      top: 60px;
       left: 0;
       width: 100%
     }

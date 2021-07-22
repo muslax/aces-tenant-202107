@@ -34,8 +34,8 @@ const ProjectHeader = ({ user, isForm }) => {
           </div>
           <div className="flex items-center space-x-4 text-xs">
             <span className="hidden sm:block text-gray-500 font-bold select-none">{user.fullname}</span>
-            <LogoutButton className={`rounded border border-blue-200 font-medium text-blue-400 px-3 py-1
-            hover:border-blue-400 hover:bg-blue-400 hover:text-white`} />
+            <LogoutButton className={`rounded border border-green-400 font-medium text-green-500 px-3 py-1
+            hover:border-green-400 hover:bg-green-400 hover:text-white`} />
           </div>
         </div>
       </div>

@@ -1,5 +1,15 @@
-const PageLoading = () => {
-  return (
+import Head from "next/head";
+
+import Hero from "./Hero";
+
+const PageLoading = ({ project, batch, title, isIndex }) => {
+  return <>
+    <Head>
+      <title>ACES - Loading page...</title>
+    </Head>
+
+    <Hero project={project} batch={batch} title={title} isIndex={isIndex} />
+
     <div id="page-loading" className="flex flex-col justify-center py-8">
       <div className="mx-auto">
       <svg
@@ -38,7 +48,7 @@ const PageLoading = () => {
       </svg>
       </div>
     </div>
-  )
+  </>
 }
 
 export default PageLoading
