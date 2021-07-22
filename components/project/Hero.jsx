@@ -7,7 +7,7 @@ const Hero = ({ project, batch, title, isIndex }) => {
         {isIndex && (
           <h2 className="text-2xl text-gray-400 font-medium truncate">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-green-400">
-              {project.title}
+              {project? project.title : '...'}
             </span>
           </h2>
         )}
@@ -24,7 +24,12 @@ const Hero = ({ project, batch, title, isIndex }) => {
         <div className="h-16 bg--yellow-50 flex flex-col space-y-2 font-medium">
           <div className="flex items-center space-x-3">
             <IdentificationIcon className="w-5 h-5 text-yellow-400" />
-            <div className="text-gray-400-">{project.client.name}, {project.client.city}</div>
+            <div className="text-gray-400-">
+              { project
+                ? `${project.client.name}, ${project.client.city}`
+                : '...'
+              }
+            </div>
           </div>
 
           {/* <div className="flex items-center space-x-3">
@@ -47,17 +52,22 @@ const Hero = ({ project, batch, title, isIndex }) => {
         <div className="h-16 flex flex-col space-y-px font-medium">
           <div className="flex items-center space-x-3">
             <FolderIcon className="w-5 h-5 text-green-500" />
-            <div className="">{project.title}</div>
+            <div className="">{project ? project.title : ''}</div>
           </div>
 
           <div className="flex items-center space-x-3">
             <IdentificationIcon className="w-5 h-5 text-yellow-400" />
-            <div className="text-gray-400-">{project.client.name}, {project.client.city}</div>
+            <div className="text-gray-400-">
+              { project
+                ? `${project.client.name}, ${project.client.city}`
+                : '...'
+              }
+            </div>
           </div>
 
           <div className="flex items-center space-x-3">
             <StatusOnlineIcon className="w-5 h-5 text-pink-500" />
-            <div className="">Batch: {batch?.title}</div>
+            <div className="">Batch: {batch ? batch.title : ''}</div>
           </div>
         </div>
       )}

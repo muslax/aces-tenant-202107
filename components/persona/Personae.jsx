@@ -8,42 +8,34 @@ import PageLoading from "components/PageLoading"
 import BatchMissing from "components/project/BatchMissing"
 import Hero from "components/project/Hero"
 import Subhead from "components/project/Subhead"
+import NoPersonae from "./NoPersonae"
 
-const Personae = ({ user, project, localBatch }) => {
-  const { personae, isLoading, isError, mutate: mutatePeronae } = useBatchPersonae(localBatch?._id)
+const Personae = ({ user, project, batch, isLoading }) => {
+  const isAdmin = user.username == project.admin.username
+  const { personae: persons, isLoading: personsLoading, isError: personsError, mutate: mutatePeronae } = useBatchPersonae(batch._id)
 
-  const {
-    batch: remoteBatch, 
-    isLoading: batchLoading, 
-    isError: batchError, 
-  } = useBatch(getLocalStorageBatch(project._id)?._id)
+  const hero = <Hero project={project} title="ACES Persona" batch={batch} />
 
-  // Create state, might be false
-  const [currentBatch, setCurrentBatch] = useState(localBatch)
+  if (isLoading || personsLoading) return <>
+    {hero}
+    <PageLoading />
+  </>
 
-  useEffect(() => {
-    if (remoteBatch) {
-      window.localStorage.setItem(project._id, JSON.stringify(remoteBatch))
-      setCurrentBatch(remoteBatch)
-    }
-  }, [remoteBatch])
-
-  if (isLoading || batchLoading) return <PageLoading />
-
-  if (batchError) {
-    // BatchMissing facilitate reselecting available batch, hence
-    // the useBatch hook won't give error result
-    return <BatchMissing pid={project._id} setCurrentBatch={setCurrentBatch} />
-  }
+if (batch.modules.length == 0) {
+  return <>
+    {hero}
+    <NoPersonae project={project} isAdmin={isAdmin} />
+  </>
+}
 
   return <>
-    <Hero project={project} title="ACES Persona" batch={currentBatch} />
-    
+    {hero}
+
     <Subhead title="Daftar Persona">
       XXX
     </Subhead>
 
-    <pre>{JSON.stringify(personae, null, 2)}</pre>
+    <pre>{JSON.stringify(persons, null, 2)}</pre>
   </>
 }
 

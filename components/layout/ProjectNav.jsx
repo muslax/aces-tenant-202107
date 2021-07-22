@@ -19,7 +19,7 @@ const ProjectNav = () => {
         <nav className="flex space-x-4 xs:space-x-5 sm:space-x-6 md:space-x-8 border-b border-green-500 border-opacity-80">
           {navigation.map(({ label, href }) => (
             <Link key={href} href={href}>
-              <a className={`text-green-600 pt-3 pb-2 border-b-4 
+              <a className={`text-green-600 pt-2 pb-2 border-b-4 
                 ${href == path 
                 ? 'border-green-500 border-opacity-80'
                 : 'border-transparent hover:border-green-500 hover:border-opacity-25'} 

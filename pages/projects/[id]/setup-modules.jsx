@@ -5,30 +5,24 @@ import { APIROUTES, ROUTES } from "config/routes";
 import useProject from "hooks/useProject";
 import useUser from "hooks/useUser";
 import { getLocalStorageBatch } from "lib/utils";
-import useBatch from "hooks/useBatch";
 
 import ProjectLayout from "components/layout/ProjectLayout";
-import Modules from "components/modules/Modules";
+import SetupModules from "components/modules/SetupModules";
 import Prefetch from "components/Prefetch";
 import { useEffect, useState } from "react";
 import PageLoading from "components/PageLoading";
 import ProjectNotFound from "components/ProjectNotFound";
-import BatchMissing from "components/project/BatchMissing";
 
 // Project routes must provide user and project props
 // to its main component
 
-const ModulesPage = () => {
+const SetupModulesPage = () => {
   const { user } = useUser()
   const router = useRouter()
   const { id: pid } = router.query
 
-  const _batch_ = getLocalStorageBatch(pid)
-
+  const [currentBatch, setCurrentBatch] = useState(getLocalStorageBatch(pid))
   const { project, isLoading, isError, mutate: mutateProject } = useProject(pid)
-  const { batch, isError: batchError, isLoading: batchLoading } = useBatch(_batch_?._id)
-
-  const [currentBatch, setCurrentBatch] = useState(_batch_)
 
   // useEffect(() => {
   //   let interval = setInterval(() => {
@@ -45,17 +39,13 @@ const ModulesPage = () => {
   // }, [])
 
   useEffect(() => {
-    if (batch) {
-      setCurrentBatch(batch)
-      window.localStorage.setItem(pid, JSON.stringify(batch))
-    }
-  }, [batch])
+    setCurrentBatch(getLocalStorageBatch(pid))
+  }, [project])
+
   
+  if (!currentBatch) return null
   if (isLoading) return <PageLoading />
-
   if (isError) return <ProjectNotFound pid={pid} />
-
-  if (batchError) return <BatchMissing pid={pid} setCurrentBatch={setCurrentBatch} />
 
   return (
     <div>
@@ -63,7 +53,7 @@ const ModulesPage = () => {
         <title>Modules: {project.title} - ACES</title>
       </Head>
       
-      <Modules user={user} project={project} batch={currentBatch} />
+      <SetupModules user={user} project={project} localBatch={currentBatch} />
 
       <div className="prefetch hidden">
         {/* <Prefetch uri={`${APIROUTES.GET.PROJECTS}`} /> */}
@@ -72,7 +62,7 @@ const ModulesPage = () => {
   )
 }
 
-ModulesPage.redirectUnAuthenticatedTo = ROUTES.Login;
-ModulesPage.getLayout = (page) => <ProjectLayout>{page}</ProjectLayout>;
+SetupModulesPage.redirectUnAuthenticatedTo = ROUTES.Login;
+SetupModulesPage.getLayout = (page) => <ProjectLayout>{page}</ProjectLayout>;
 
-export default ModulesPage
+export default SetupModulesPage

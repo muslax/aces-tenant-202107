@@ -4,6 +4,8 @@ import { useRouter } from "next/router"
 import { APIROUTES, ROUTES } from "config/routes"
 import useProject from "hooks/useProject"
 import useUser from "hooks/useUser"
+import useBatch from "hooks/useBatch"
+import useModules from "hooks/useModules"
 import { getLocalStorageBatch } from "lib/utils"
 
 import ProjectLayout from "components/layout/ProjectLayout"
@@ -12,6 +14,7 @@ import Prefetch from "components/Prefetch"
 import { useEffect, useState } from "react"
 import PageLoading from "components/PageLoading"
 import ProjectNotFound from "components/ProjectNotFound"
+import BatchMissing from "components/project/BatchMissing"
 
 // Project routes must provide user and project props
 // to its main component
@@ -21,31 +24,25 @@ const DeploymentPage = () => {
   const router = useRouter()
   const { id: pid } = router.query
 
-  const [currentBatch, setCurrentBatch] = useState(getLocalStorageBatch(pid))
+  const _batch_ = getLocalStorageBatch(pid)
+
   const { project, isLoading, isError, mutate: mutateProject } = useProject(pid)
+  const { batch, isError: batchError, isLoading: batchLoading } = useBatch(_batch_?._id)
 
-  // useEffect(() => {
-  //   let interval = setInterval(() => {
-  //     console.log("Checking LS...")
-  //     if (false === getLocalStorageBatch(pid)) {
-  //       console.log("Batch missing...")
-  //       setCurrentBatch(null)
-  //     } else {
-  //       console.log("OK")
-  //     }
-  //   }, 5000) // every 5 second
-
-  //   return () => { clearInterval(interval) }
-  // }, [])
+  const [currentBatch, setCurrentBatch] = useState(_batch_)
 
   useEffect(() => {
-    setCurrentBatch(getLocalStorageBatch(pid))
-  }, [project])
-
+    if (batch) {
+      setCurrentBatch(batch)
+      window.localStorage.setItem(pid, JSON.stringify(batch))
+    }
+  }, [batch])
   
-  if (!currentBatch) return null
   if (isLoading) return <PageLoading />
+
   if (isError) return <ProjectNotFound pid={pid} />
+
+  if (batchError) return <BatchMissing pid={pid} setCurrentBatch={setCurrentBatch} />
 
   return (
     <div>
@@ -53,7 +50,7 @@ const DeploymentPage = () => {
         <title>Modules: {project.title} - ACES</title>
       </Head>
       
-      <Deployment user={user} project={project} localBatch={currentBatch} />
+      <Deployment user={user} project={project} batch={currentBatch} />
 
       <div className="prefetch hidden">
         {/* <Prefetch uri={`${APIROUTES.GET.PROJECTS}`} /> */}

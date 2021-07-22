@@ -18,7 +18,7 @@ const ProjectHeader = ({ user, isForm }) => {
     <div id="project-header" 
     className="fixed z-50 top-0 left-0 right-0 bg-gray-50"
     >
-      <div className={`max-w-4xl mx-auto px-5 py-5`}>
+      <div className={`max-w-4xl mx-auto px-5 py-4`}>
         <div className="flex h-7 items-center space-x-3">
           <div className="flex">
             <Link href="/">

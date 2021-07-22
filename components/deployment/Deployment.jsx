@@ -1,47 +1,40 @@
 import { useEffect, useState } from "react"
 
 import useBatch from "hooks/useBatch"
+import useModules from "hooks/useModules"
 import useBatchPersonae from "hooks/useBatchPersonae"
-import { getLocalStorageBatch } from "lib/utils"
+import { getBatchModules, getLocalStorageBatch } from "lib/utils"
 
 import PageLoading from "components/PageLoading"
 import BatchMissing from "components/project/BatchMissing"
 import Hero from "components/project/Hero"
 import Subhead from "components/project/Subhead"
 
-const Deployment = ({ user, project, localBatch }) => {
-  const { personae, isLoading, isError, mutate: mutatePeronae } = useBatchPersonae(localBatch?._id)
+const Deployment = ({ user, project, batch }) => {
+  const isAdmin = user.username == project.admin.username
+  const { modules, isError: moduleError, isLoading: modulesLoading } = useModules()
+  const { personae, isLoading: personsLoading, isError: personsError, mutate: mutatePeronae } = useBatchPersonae(batch._id)
+  
+  const batchModules = getBatchModules(batch, modules);
 
-  const {
-    batch: remoteBatch, 
-    isLoading: batchLoading, 
-    isError: batchError, 
-  } = useBatch(getLocalStorageBatch(project._id)?._id)
+  const hero = <Hero project={project} title="ACES Persona" batch={batch} />
 
-  // Create state, might be false
-  const [currentBatch, setCurrentBatch] = useState(localBatch)
-
-  useEffect(() => {
-    if (remoteBatch) {
-      window.localStorage.setItem(project._id, JSON.stringify(remoteBatch))
-      setCurrentBatch(remoteBatch)
-    }
-  }, [remoteBatch])
-
-  if (isLoading || batchLoading) return <PageLoading />
-
-  if (batchError) {
-    // BatchMissing facilitate reselecting available batch, hence
-    // the useBatch hook won't give error result
-    return <BatchMissing pid={project._id} setCurrentBatch={setCurrentBatch} />
-  }
+  if (modulesLoading || personsLoading) return <>
+    {hero}
+    <PageLoading />
+  </>
+  
 
   return <>
-    <Hero project={project} title="Deployment" batch={currentBatch} />
+    {hero}
     
     <Subhead title="Test Settings">
       XXX
     </Subhead>
+
+    <pre>{JSON.stringify(batch, null, 2)}</pre>
+    <pre>{JSON.stringify(modules, null, 2)}</pre>
+    <pre>{JSON.stringify(batchModules, null, 2)}</pre>
   </>
 }
 

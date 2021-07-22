@@ -5,14 +5,14 @@ import { APIROUTES, ROUTES } from "config/routes";
 import useProject from "hooks/useProject";
 import useUser from "hooks/useUser";
 import { getLocalStorageBatch } from "lib/utils";
-import useBatch from "hooks/useBatch";
 
 import ProjectLayout from "components/layout/ProjectLayout";
-import Modules from "components/modules/Modules";
+import XModules from "components/modules/XModules";
 import Prefetch from "components/Prefetch";
 import { useEffect, useState } from "react";
 import PageLoading from "components/PageLoading";
 import ProjectNotFound from "components/ProjectNotFound";
+import useBatch from "hooks/useBatch";
 import BatchMissing from "components/project/BatchMissing";
 
 // Project routes must provide user and project props
@@ -23,6 +23,7 @@ const ModulesPage = () => {
   const router = useRouter()
   const { id: pid } = router.query
 
+  // localStorage
   const _batch_ = getLocalStorageBatch(pid)
 
   const { project, isLoading, isError, mutate: mutateProject } = useProject(pid)
@@ -30,40 +31,35 @@ const ModulesPage = () => {
 
   const [currentBatch, setCurrentBatch] = useState(_batch_)
 
-  // useEffect(() => {
-  //   let interval = setInterval(() => {
-  //     console.log("Checking LS...")
-  //     if (false === getLocalStorageBatch(pid)) {
-  //       console.log("Batch missing...")
-  //       setCurrentBatch(null)
-  //     } else {
-  //       console.log("OK")
-  //     }
-  //   }, 5000) // every 5 second
-
-  //   return () => { clearInterval(interval) }
-  // }, [])
-
   useEffect(() => {
     if (batch) {
       setCurrentBatch(batch)
       window.localStorage.setItem(pid, JSON.stringify(batch))
     }
   }, [batch])
+
   
+  if (!currentBatch) return null
   if (isLoading) return <PageLoading />
-
   if (isError) return <ProjectNotFound pid={pid} />
-
-  if (batchError) return <BatchMissing pid={pid} setCurrentBatch={setCurrentBatch} />
+  if (batchError) {
+    return <>
+      <Head>
+        <title>Modules: {project.title} - ACES</title>
+      </Head>
+      <BatchMissing pid={pid} setCurrentBatch={setCurrentBatch} />
+    </>
+  }
 
   return (
     <div>
       <Head>
         <title>Modules: {project.title} - ACES</title>
       </Head>
+
+      {/* {batchError && <BatchMissing pid={pid} setCurrentBatch={setCurrentBatch} />} */}
       
-      <Modules user={user} project={project} batch={currentBatch} />
+      <XModules user={user} project={project} batch={currentBatch} />
 
       <div className="prefetch hidden">
         {/* <Prefetch uri={`${APIROUTES.GET.PROJECTS}`} /> */}

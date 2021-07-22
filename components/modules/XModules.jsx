@@ -11,25 +11,20 @@ import Subhead from "components/project/Subhead"
 import BatchMissing from "components/project/BatchMissing"
 import NoModules from "./NoModules"
 
-const Modules = ({ user, project, batch }) => { 
+const XModules = ({ user, project, batch }) => { 
   const isAdmin = user.username == project.admin.username
   const { modules, isError: moduleError, isLoading: modulesLoading } = useModules()
   const batchModules = getBatchModules(batch, modules);
   
-  // localBatch comes from localStorage, might be false
-  // Or might be has just been deleted
-
-  if (modulesLoading) return <PageLoading />
-
   if (batch.modules.length == 0) {
     return <>
-      <Hero project={project} title="ACES Modules" batch={batch} />
+      <Hero project={project} title="ACES X Modules" batch={batch} />
       <NoModules project={project} isAdmin={isAdmin} />
     </>
   }
 
   return <>
-    <Hero project={project} title="ACES Modules" batch={batch} />
+    <Hero project={project} title="ACES X Modules" batch={batch} />
 
     <Subhead title="Daftar Modul">
       {isAdmin && 
@@ -61,4 +56,4 @@ const Modules = ({ user, project, batch }) => {
   </>
 }
 
-export default Modules
+export default XModules

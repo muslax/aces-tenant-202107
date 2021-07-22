@@ -1,12 +1,17 @@
-import { getLocalStorageBatch } from "lib/utils"
+import Head from "next/head";
 
-const { default: useBatches } = require("hooks/useBatches")
+import { getLocalStorageBatch } from "lib/utils"
+import useBatches from "hooks/useBatches";
 
 const BatchMissing = ({ pid, setCurrentBatch, callback }) => {
   const localBatch = getLocalStorageBatch(pid)
   const { batches, isError, isLoading } = useBatches(pid)
 
   return <>
+    <Head>
+      <title>ACES: Batch missing</title>
+    </Head>
+    
     <div className="bg-green-500 bg-opacity-80 text-white h--64 px-7 pt-5 pb-7">
       <div className="max-w-xl">
         {localBatch && localBatch.title && (
