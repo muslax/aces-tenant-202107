@@ -58,7 +58,7 @@ const Personae = ({ user, project, batch, isLoading }) => {
     />
   }
 
-  if (persons.length == 0) {
+  if (personae.length == 0) {
     return <NoPersonae 
       project={project} 
       batch={batch}
