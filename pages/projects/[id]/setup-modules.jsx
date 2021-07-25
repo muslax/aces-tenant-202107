@@ -12,6 +12,7 @@ import Prefetch from "components/Prefetch";
 import { useEffect, useState } from "react";
 import PageLoading from "components/PageLoading";
 import ProjectNotFound from "components/ProjectNotFound";
+import NotAuthorized from "components/NotAuthorized";
 
 // Project routes must provide user and project props
 // to its main component
@@ -46,6 +47,10 @@ const SetupModulesPage = () => {
   if (!currentBatch) return null
   if (isLoading) return <PageLoading />
   if (isError) return <ProjectNotFound pid={pid} />
+
+  if (user.username != project.admin.username) {
+    return <NotAuthorized user={user} sendBackUrl={`/projects/${project._id}/modules`} />
+  }
 
   return (
     <div>

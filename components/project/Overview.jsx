@@ -28,10 +28,15 @@ const Overview = ({ user, project, batches, mutate }) => {
   const [batchForm, setBatchForm] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [title, setTitle] = useState('')
-  const [date1, setDate1] = useState('')
+  const [date1, setDate1] = useState(new Date().toISOString().substr(0, 10))
 
   function isReady() {
     return title.length > 5 && date1.length == 10
+  }
+
+  function reset() {
+    setTitle('')
+    setDate1(new Date().toISOString().substr(0, 10))
   }
 
   async function saveNewBatch(e) {
@@ -44,14 +49,16 @@ const Overview = ({ user, project, batches, mutate }) => {
     }))
 
     mutate()
-    setTitle('')
-    setDate1('')
+    reset()
     setBatchForm(false)
     setSubmitting(false)
   }
 
-  const inputStyle = `peer relative text-sm font--medium w-full h-8 px-2 pb-2 
+  const _inputStyle = `peer relative text-sm font--medium w-full h-8 px-2 pb-2 
   caret-blue-400 border border-gray-200 focus:border-blue-200 rounded bg-gray-50 focus:bg-blue-50 focus:bg-opacity-70 focus:ring-0`
+
+  const inputStyle = `peer relative text-sm font--medium w-full h-8 px-2 pb-2 
+  caret-green-400 border border-gray-300 focus:border-green-400 rounded bg-white focus:bg--green-50 focus:bg-opacity-70 focus:ring-0`
 
   const inputError = `peer relative text-sm font--medium w-full h-8 px-2 pb-2 
   caret-blue-400 border border-red-300 focus:border-blue-200 rounded bg-gray-50 focus:bg-blue-50 focus:bg-opacity-70 focus:ring-0`
@@ -74,20 +81,20 @@ const Overview = ({ user, project, batches, mutate }) => {
         style={{ top: '-48px' }}
       >
         {info == "batch" && <>
-          <span className="flex items-center h-7 rounded-l bg-gray-400 text-white px-3 cursor-default">
+          <span className="flex items-center h-7 rounded-l bg-green-400 text-white px-3 cursor-default">
             Batch Info
           </span>
           <button 
-            className="flex items-center h-7 rounded-r bg-gray-200 bg-opacity-75 hover:bg-opacity-100 font-medium px-3" 
+            className="flex items-center h-7 rounded-r bg-green-200 bg-opacity-75 text-green-600 hover:bg-opacity-100 font-medium px-3" 
             onClick={e => setInfo("project")}
           >Project Info</button>
         </>}
         {info != "batch" && <>
           <button 
-            className="flex items-center h-7 rounded-l bg-gray-200 bg-opacity-75 hover:bg-opacity-100 font-medium px-3" 
+            className="flex items-center h-7 rounded-l bg-green-200 bg-opacity-75 text-green-600 hover:bg-opacity-100 font-medium px-3" 
             onClick={e => setInfo("batch")}
           >Batch Info</button>
-          <span className="flex items-center h-7 rounded-r bg-gray-400 text-white px-3 cursor-default">Project Info</span>
+          <span className="flex items-center h-7 rounded-r bg-green-400 text-white px-3 cursor-default">Project Info</span>
         </>}
       </div>
     </div>
@@ -108,6 +115,9 @@ const Overview = ({ user, project, batches, mutate }) => {
         </select>
       </Subhead>
 
+      {/* <hr className="mt-2 mb-4 border-green-400 border-opacity-80"/> */}
+      <hr className="h-2 border-none" />
+
       {currentBatch && <BatchInfo batch={currentBatch} modules={modules} />}
     </>}
 
@@ -124,6 +134,9 @@ const Overview = ({ user, project, batches, mutate }) => {
           >Edit Info</button>
         )}
       </Subhead>
+
+      <hr className="h-2 border-none" />
+
       <ProjectInfo 
         user={user} 
         users={users}
@@ -133,20 +146,24 @@ const Overview = ({ user, project, batches, mutate }) => {
       />
     </>}
 
-    <br/><br/>
+    <br/>
+    {/* <pre>{JSON.stringify(currentBatch, null, 2)}</pre> */}
+    <br/>
 
     <Subhead title="Batch List">
-      <button 
+      {isAdmin && <button 
         className="project-button px-4"
         onClick={e => {
           setBatchForm(true)
           setTimeout(window.scrollBy(0, 500), 2000)
         }}
-      >New Batch</button>
+      >New Batch</button>}
     </Subhead>
 
+    <hr className="h-2 border-none" />
+
     {batchForm && 
-    <div className="border-t pt-3 pb-1">
+    <div className="bg-green--50 bg-gradient-to-t from-white border-t border-green-500 border-opacity-60 pt-3 pb-1">
       <div className="max-w-sm mx-auto pt-3">
         <FormRow label="Nama Batch:" width="">
           <input 
@@ -211,7 +228,10 @@ const Overview = ({ user, project, batches, mutate }) => {
                   rounded border text-red-400 hover:border-red-300
                   focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-red-400
                   `}
-                  onClick={e => setBatchForm(false)}
+                  onClick={e => {
+                    setBatchForm(false)
+                    reset()
+                  }}
                 >Cancel</button>
               </div>
             </div>
@@ -230,6 +250,7 @@ const Overview = ({ user, project, batches, mutate }) => {
       batches={batches} 
       currentBatch={currentBatch}
       setCurrentBatch={setCurrentBatch}
+      isAdmin={isAdmin}
     />
   </>
 }
@@ -238,7 +259,7 @@ export default Overview
 
 const FormRow = ({ label, width, forButton, children }) => {
   const inputUnderline = `absolute left-0 bottom-0 right-0 w-0 opacity-0
-  border-b-2 border-blue-400 transition duration-150 ease-out linear
+  border-b-2 border-green-400 transition duration-150 ease-out linear
   peer-focus:w-full peer-focus:opacity-100 peer-focus:transition 
   peer-focus:origin-center peer-focus:duration-150 peer-focus:ease-in`
 

@@ -9,7 +9,7 @@ import { mutate } from "swr"
 
 import FixedOverlay from "components/FixedOverlay"
 
-const BatchTable = ({ batches, currentBatch, setCurrentBatch }) => {
+const BatchTable = ({ batches, currentBatch, setCurrentBatch, isAdmin }) => {
   const [selected, setSelected] = useState(null)
   const [toBeDeleted, setToBeDeleted] = useState(null)
 
@@ -35,21 +35,29 @@ const BatchTable = ({ batches, currentBatch, setCurrentBatch }) => {
     setToBeDeleted(null)
   }
 
+  function isDisabled(batch) {
+    return batch.protected || batch._id == currentBatch._id
+  }
+
   return <>
-    <div className="border-t border-b border-gray-300 hover:border-gray-400 hover:border-opacity-60">
+    <div className="border-t border-b border-green-500 border-opacity-50 hover:border-opacity-80">
       {batches.map(batch => 
-        <div key={batch._id} className="h-12 px-1 flex items-center space-x-3 border-b border-gray-300 last:border-none">
-          {batch.protected && <StatusOnlineIcon className={`flex-shrink-0 w-5 h-5 `}/>}
+        <div key={batch._id} className="h-12 px-1 flex items-center space-x-3 border-b border-green-500 border-opacity-50 last:border-none">
+          {batch.protected && <StatusOnlineIcon className={`flex-shrink-0 w-5 h-5 text-gray-600`}/>}
           {!batch.protected && <StatusOnlineIcon className={`flex-shrink-0 w-5 h-5 
-            ${batch._id == currentBatch._id ? 'text-green-400' : 'text-gray-400'}`}
+            ${batch._id == currentBatch._id ? 'text-green-500' : 'text-gray-300'}`}
           />}
           <div className="flex-shrink-0">{batch.date1}</div>
           
           {(!selected || selected._id != batch._id) && (
             <div className="flex-grow overflow-hidden">
                 <p 
-                  className="font-bold truncate"
-                  onDoubleClick={e => setCurrentBatch(batch)}
+                  className={`font-bold truncate cursor-default select-none
+                  ${batch._id == currentBatch._id ? 'text-green-600' : ''}`}
+                  onDoubleClick={e => {
+                    setCurrentBatch(batch)
+                    window.localStorage.setItem(batch.pid, JSON.stringify(batch))
+                  }}
                 >
                   {batch.title}
                 </p>
@@ -80,27 +88,30 @@ const BatchTable = ({ batches, currentBatch, setCurrentBatch }) => {
 
           {(!selected || selected._id != batch._id) && <>
             <button 
-              className="flex items-center space-x-1 text-xs font-medium text-gray-500 hover:text-blue-500"
+              disabled={!isAdmin}
+              className={`flex items-center space-x-1 text-xs font-medium ${!isAdmin ? 'text-gray-300' : 'text-gray-500 hover:text-green-500'}`}
               onClick={e => setSelected(batch)}
             >
-              <PencilAltIcon className="w-4 h-4 text-blue-500" />
+              <PencilAltIcon className={`w-4 h-4 ${!isAdmin ? 'text-gray-300' : 'text-green-500'}`} />
               <span>Rename</span>
             </button>
             <button 
-              disabled={batch.protected || batch._id == currentBatch._id}
-              className={`flex items-center space-x-1 text-xs font-medium text-gray-500 
-              ${batch.protected || batch._id == currentBatch._id ? '' : 'hover:text-red-500'}`}
+              disabled={!isAdmin || isDisabled(batch)}
+              className={`group flex items-center space-x-1 text-xs font-medium  
+              ${!isAdmin || isDisabled(batch) ? 'text-gray-300' : 'text-gray-500 hover:text-red-600'}`}
               onClick={e => setToBeDeleted(batch)}
             >
-              <TrashIcon className={`w-4 h-4 ${batch.protected|| batch._id == currentBatch._id ? 'text-gray-400' : 'text-red-500'}`} />
+              <TrashIcon className={`w-4 h-4 ${!isAdmin || isDisabled(batch) ? 'text-gray-300' : 'text-red-400'}`} />
               <span>Delete</span>
             </button>
           </>}
           {(selected && selected._id == batch._id) && (
+            <div className="px-4 sm:px-8">
             <button
               className="text-xs font-semibold text-red-500 hover:text-red-400"
               onClick={e => setSelected(null)}
             >Cancel</button>
+            </div>
           )}
           
           {/* {batch._id != currentBatch?._id && (
@@ -143,7 +154,7 @@ const BatchTable = ({ batches, currentBatch, setCurrentBatch }) => {
               </div>
               <div className="text-center pt-4">
                 <button 
-                  className="rounded text-white font-semibold bg-blue-500 hover:bg-blue-400 px-5 py-1"
+                  className="rounded text-white font-semibold bg-green-500 hover:bg-green-400 px-8 py-1"
                   onClick={deleteBatch}
                 >OK</button>
               </div>

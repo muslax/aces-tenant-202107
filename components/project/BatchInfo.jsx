@@ -1,9 +1,4 @@
-import { useEffect, useState } from "react"
-
 export default function BatchInfo({ batch, modules }) {
-  const [hasModules, setHasModules] = useState(false);
-  const [tests, setTests] = useState([]);
-  const [sims, setSims] = useState([]);
 
   function getPersons() {
     if (batch.personae == 0) return <span className="text-red-500">Data belum tersedia</span>;
@@ -14,73 +9,33 @@ export default function BatchInfo({ batch, modules }) {
   }
 
   function getModules() {
-    if (!hasModules) return <span className="text-red-500">Modul belum terinstal</span>;
+    if (batch.modules.length == 0) return <span className="text-red-500">Modul belum terinstal</span>;
     const mtests = <>
-      <span className="">{tests.length}</span>
+      <span className="">{batch.tests.length}</span>
       <span className="ml-2">tes mandiri </span>
     </>;
     const mguided = <>
-      <span className="">{sims.length}</span>
+      <span className="">{batch.sims.length}</span>
       <span className="ml-2">temu muka</span>
     </>;
 
-    if (tests.length > 0 && sims.length == 0) return mtests;
-    else if (sims.length > 0 && tests.length == 0) return mguided;
+    if (batch.tests.length > 0 && batch.sims.length == 0) return mtests;
+    else if (batch.sims.length > 0 && batch.tests.length == 0) return mguided;
     return <div className="text-gray--400 font-bold">
       {mtests} <span className="text-gray-400 font-normal mx-2">&ndash;</span> {mguided}
     </div>;
   }
 
   function getGroups() {
-    if (batch.groups == 0) return <span className="text-red-500">Belum terkonfirmasi</span>;
+    if (batch.groups == 0) return <span className="text-red-500">Belum final</span>;
     return <>
       <span className="font-bold">{batch.groups}</span>
       <span className="text-gray-500 ml-2">grup</span>
     </>;
   }
 
-  function getGuided() {
-    if (!hasModules) return <span className="text-red-500">Modul belum terinstal</span>;
-    else {
-      if (sims.length == 0) return <span className="text-gray-500">Tidak ada</span>;
-      else {
-        const titles = [];
-        sims.forEach(s => { titles.push(s.title) });
-        return <span className="font-bold">{titles.join(", ")}</span>;
-      }
-    }
-  }
-
-  function Datarow({ children, title }) {
-    return (
-      <tr className="border-t">
-        <td className="w-1/5 h-8 whitespace-nowrap py-2 pr-2">{title}:</td>
-        <td className="h-8 px-2 py-2">{children}</td>
-      </tr>
-    )
-  }
-
-  if (!batch) return null;
-
-  useEffect(() => {
-    if (modules) {
-      if (batch.modules.length > 0) setHasModules(true);
-
-      const tests = [], guided = [];
-      modules.forEach(m => {
-        if (batch.modules.includes(m._id)) {
-          if (m.method == 'selftest') tests.push(m);
-          else guided.push(m);
-        }
-      })
-
-      setTests(tests);
-      setSims(guided);
-    }
-  }, [batch, modules])
-
   return <>
-    <div className="rounded-md border border-gray-300 hover:border-gray-400 hover:border-opacity-60 hover:shadow-sm">
+    <div className="rounded-md border border-green-500 border-opacity-50 hover:border-opacity-80 hover:shadow-sm">
       <InfoRow label="Nama Batch:">
         <p className="font-bold">{batch.title}</p>
       </InfoRow>
@@ -88,13 +43,13 @@ export default function BatchInfo({ batch, modules }) {
         <p className="font-bold">{batch.date1}</p>
       </InfoRow>
       <InfoRow label="Modul ACES:">
-        <p>Loadk</p>
+        <p>{getModules()}</p>
       </InfoRow>
-      <InfoRow label="Pseserta:">
-        <p>Loadk</p>
+      <InfoRow label="Peserta:">
+        <p>{getPersons()}</p>
       </InfoRow>
       <InfoRow label="Grup & Skedul:">
-        <p>Loadk</p>
+        <p>{getGroups()}</p>
       </InfoRow>
     </div>
   </>
@@ -102,7 +57,7 @@ export default function BatchInfo({ batch, modules }) {
 
 function InfoRow({ label, children }) {
   return (
-    <div className="flex items-center px-5 py-3 border-b border-gray-300 last:border-none">
+    <div className="flex items-center px-4 py-3 border-b border-green-500 border-opacity-50 last:border-none">
       <label className="w-36 sm:w-40 text-gray-500">
         {label}
       </label>

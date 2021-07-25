@@ -29,10 +29,10 @@ export default function ProjectInfo({ user, users, project, editing, setEditing 
 
   const isAdmin = user.username == project.admin.username
 
-  const inputStyle = "text-sm leading-tight px-2 py-1 rounded bg-green-50 bg-opacity-50 border-green-300 hover:border-green-400 hover:border-opacity-90 focus:bg-white focus:border-blue-300 focus:ring-blue-100 disabled:border-gray-300 disabled:bg-gray-50"
+  const inputStyle = "text-sm leading-tight px-2 py-1 rounded bg-gray-100 border-transparent hover:border-gray-300 hover:border-opacity-90 focus:bg-white focus:border-gray-400 focus:border-opacity-70 focus:ring-0 disabled:border-gray-200 disabled:text-gray-700 disabled:bg-gray-200"
 
   return <>
-    <div className="rounded-md border border-gray-300 hover:border-gray-400 hover:border-opacity-60 hover:shadow-sm">
+    <div className="rounded-md border border-green-500 border-opacity-50 hover:border-opacity-80 hover:shadow-sm">
       {editing && <>
         <InfoRow label="ID Proyek:" form>
           <input disabled
@@ -61,10 +61,11 @@ export default function ProjectInfo({ user, users, project, editing, setEditing 
           ></textarea>
         </InfoRow>
         <InfoRow label="Tanggal Kontrak:" form>
-          <input disabled={!isAdmin || submitting}
+          <input id={!isAdmin ? 'DATE-DISABLED' : ''}
+            disabled={!isAdmin || submitting}
             type="date"
             value={copy.contractDate}
-            className={`w-40 ${inputStyle}`}
+            className={`w-40 disabled:text-red-500 ${inputStyle}`}
             style={{ resize: 'none' }}
             onChange={e => setCopy(s => ({...s, contractDate: e.target.value}))}
           />
@@ -134,12 +135,17 @@ export default function ProjectInfo({ user, users, project, editing, setEditing 
         </div>
       </FixedOverlay>
     }
+    <style jsx>{`
+    input[type="date"]#DATE-DISABLED {
+      color:red;
+    }
+    `}</style>
   </>
 }
 
 function InfoRow({ children, label, form = false, truncate = true }) {
   return (
-    <div className={`flex items-center px-4 ${form ? 'py-2' : 'py-3'} border-b border-gray-300 last:border-none`}>
+    <div className={`flex items-center px-4 ${form ? 'py-2' : 'py-3'} border-b border-green-500 border-opacity-50 last:border-none`}>
       <label className="flex-shrink-0 w-36 sm:w-40 text-gray-500">
         {label}
       </label>

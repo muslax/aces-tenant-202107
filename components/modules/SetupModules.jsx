@@ -155,9 +155,20 @@ const SetupModules = ({ user, project, localBatch }) => {
   async function saveBatchModules(e) {
     setSubmitting(true);
 
+    // Fill tests & sims
+    const tests = [], sims =[]
+    modules.forEach(m => {
+      if (selection.includes(m._id)) {
+        if (m.method == 'selftest') tests.push(m._id)
+        else sims.push(m._id)
+      }
+    })
+
     const res = await fetchJson(APIROUTES.POST.SAVE_MODULES, generatePOSTData({
       id: currentBatch._id,
       modules: orderedSelection,
+      tests: tests,
+      sims: sims,
     }))
 
     if (res) {

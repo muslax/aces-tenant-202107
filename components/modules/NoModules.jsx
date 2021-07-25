@@ -11,29 +11,36 @@ export default function NoModules({ project, batch, isAdmin }) {
 
     <Hero project={project} batch={batch} title="ACES Modules" />
 
-    <div id="no-modules" className="border-t -border-gray-300 text-center px-5 py-6">
-      <h2 className="text-lg text-pink-500  font-bold mb-7">
+    <div id="no-modules" 
+      className="px-5 py-6 -mb-36 bg-green-50 bg-gradient-to-t from-white border-t border-green-500 border-opacity-80 text-center"
+      style={{
+        minHeight: 'calc(100vh - 100px)'
+      }}
+    >
+      <h2 className="text-lg text-green-700 font-bold mb-7">
         Batch ini belum memiliki Modul ACES
       </h2>
 
       {isAdmin && (
         <div>
-            <p className="text-base mb-4">
-              Klik tombol di bawah untuk menginstal Modul ACES.
-            </p>
-            <p>
-              <Link href={`/projects/${project._id}/setup-modules`}>
-                <a
-                  className="inline-flex font-semibold text-green-500 rounded-sm border border-green-500 hover:border-green-400 hover:text-green-600 active:border-green-500 active:text-green-700 px-5 py-2"
-                >Instal Modul ACES</a>
-              </Link>
-            </p>
+          <p className="mb-4">
+            Klik tombol di bawah untuk menginstal Modul ACES.
+          </p>
+          <p className="mb-4">
+            <Link href={`/projects/${project._id}/setup-modules`}>
+              <a
+                className={`inline-flex text-white font-semibold rounded
+                bg-green-500 hover:bg-opacity-90
+                border border-green-600 border-opacity-60 active:text-green-700 px-5 py-2`}
+              >Instal Modul ACES</a>
+            </Link>
+          </p>
         </div>
       )}
 
       {!isAdmin && (
         <div>
-          <p className="text-base">
+          <p className="mb-4">
             Hanya admin proyek yang dapat menginstal Modul ACES.
           </p>
         </div>

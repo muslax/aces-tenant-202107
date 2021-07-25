@@ -37,6 +37,7 @@ export const API = {
     UPDATE_BATCH:           'update-batch',
     DELETE_BATCH:           'delete-batch',
     SAVE_MODULES:           'save-modules',
+    SAVE_TEST_CONFIG:       'save-test-config',
 
     SAVE_CSV_DATA:          'save-csv-data',
     ADD_NAMES:              'add-names',

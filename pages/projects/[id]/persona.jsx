@@ -9,6 +9,7 @@ import useBatch from "hooks/useBatch";
 import { getLocalStorageBatch } from "lib/utils";
 
 import ProjectLayout from "components/layout/ProjectLayout";
+import ProjectNotFound from "components/ProjectNotFound";
 import Personae from "components/persona/Personae";
 import Prefetch from "components/Prefetch";
 import BatchMissing from "components/project/BatchMissing";

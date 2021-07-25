@@ -13,7 +13,7 @@ const Modules = ({ user, project, batch }) => {
   const { modules, isError: moduleError, isLoading: modulesLoading } = useModules()
   const batchModules = getBatchModules(batch, modules);
   
-  if (modulesLoading) {
+  if (modulesLoading || !batch) {
     return <PageLoading 
       project={project} 
       batch={batch}
@@ -32,7 +32,7 @@ const Modules = ({ user, project, batch }) => {
   return <>
     <Hero project={project} title="ACES Modules" batch={batch} />
 
-    <Subhead title="Daftar Modul">
+    <Subhead title="Modul Mandiri">
       {isAdmin && 
         <Link href={`/projects/${project._id}/setup-modules`}>
           <a className="project-button px-3">Add / Remove</a>
@@ -40,10 +40,10 @@ const Modules = ({ user, project, batch }) => {
       }
     </Subhead>
 
-    <hr className="mt-2 mb-4"/>
+    <hr className="mt-2 mb-4 border-yellow-500 border-opacity-50"/>
 
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-4- gap-4">
-    {batchModules.map(m => (
+    {modules.filter(m => batch.tests.includes(m._id)).map(m => (
       <div key={m._id} className="rounded border hover:shadow-sm">
         <div className="bg-gray-100 rounded-t font-bold px-3 py-2">{m.title}</div>
         <div className="text-gray-500 px-3 py-3">
@@ -55,7 +55,26 @@ const Modules = ({ user, project, batch }) => {
     ))}
     </div>
 
-    <pre>{JSON.stringify(batchModules, null, 2)}</pre>
+    <br/>
+
+    <Subhead title="Modul Temumuka" />
+
+    <hr className="mt-2 mb-4 border-yellow-500 border-opacity-50"/>
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-4- gap-4">
+    {modules.filter(m => batch.sims.includes(m._id)).map(m => (
+      <div key={m._id} className="rounded border hover:shadow-sm">
+        <div className="bg-gray-100 rounded-t font-bold px-3 py-2">{m.title}</div>
+        <div className="text-gray-500 px-3 py-3">
+          <div className="mb-2">{m.description}</div>
+          <div className="">Waktu: {m.maxTime}</div>
+
+        </div>
+      </div>
+    ))}
+    </div>
+
+    {/* <pre>BATCH {JSON.stringify(batch, null, 2)}</pre> */}
 
     <style jsx>{`
     `}</style>

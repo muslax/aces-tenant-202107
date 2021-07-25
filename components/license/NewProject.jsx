@@ -24,7 +24,8 @@ const NewProject = ({ user }) => {
   const [title, setTitle] = useState('')
   const [fullTitle, setFullTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [contractDate, setContractDate] = useState('')
+  const [contractDate, setContractDate] = useState(new Date().toISOString().substr(0, 10))
+  const [todaysDate, setTodaysDate] = useState(new Date().toISOString().substr(0, 10))
 
   const [cid, setClientId] = useState(null)
   const [clientName, setClientName] = useState('')
@@ -88,6 +89,7 @@ const NewProject = ({ user }) => {
       clientName: clientName,
       clientCity: clientCity,
       clientAddress: clientAddress,
+      batchDate: todaysDate,
     }))
 
     mutate(APIROUTES.GET.PROJECTS)
@@ -189,6 +191,9 @@ const NewProject = ({ user }) => {
             }}
           />
         </FormRow>
+
+        <hr className="border-blue-200 mt-2 mb-2 sm:mt-0 sm:mb-4" />
+        
         {/* Klien */}
         <FormRow label="Pilih klien" width="">
           <select
@@ -260,6 +265,32 @@ const NewProject = ({ user }) => {
             }}
           />
         </FormRow>
+
+        <hr className="border-blue-200 mt-2 mb-2 sm:mt-0 sm:mb-4" />
+
+        {/* Tgl deployment */}
+        <FormRow label="Tanggal deployment" width="w-52">
+          <input 
+            type="date" 
+            value={todaysDate}
+            min={new Date().toISOString().substr(0, 10)}
+            disabled={submitting}
+            autoComplete={false}
+            autoCorrect={false}
+            className={`${inputStyle}`}
+            onChange={e => setTodaysDate(e.target.value)}
+            onBlur={e => {
+              const val = e.target.value
+              setTodaysDate(val)
+              if (val.length == 0) {
+                e.currentTarget.className = inputError
+              } else {
+                e.currentTarget.className = inputStyle
+              }
+            }}
+          />
+        </FormRow>
+
         {/* Button */}
         <FormRow label="" width="" forButton>
           <div className="p-2 -mx-2">

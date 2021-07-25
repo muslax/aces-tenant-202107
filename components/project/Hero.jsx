@@ -2,7 +2,7 @@ import { FolderIcon, IdentificationIcon, StatusOnlineIcon } from '@heroicons/rea
 
 const Hero = ({ project, batch, title, isIndex }) => {
   return <>
-    <div className="pt-3 pb-5 border--b">
+    <div className="pt-3 pb-6 border--b">
       <div className="h-12 pb-1 flex items-end">
         {isIndex && (
           <h2 className="text-2xl text-gray-400 font-medium truncate">
