@@ -37,19 +37,19 @@ export default function BatchInfo({ batch, modules }) {
   return <>
     <div className="rounded-md border border-green-500 border-opacity-50 hover:border-opacity-80 hover:shadow-sm">
       <InfoRow label="Nama Batch:">
-        <p className="font-bold">{batch.title}</p>
+        <div className="font-bold">{batch.title}</div>
       </InfoRow>
       <InfoRow label="Tanggal:">
-        <p className="font-bold">{batch.date1}</p>
+        <div className="font-bold">{batch.date1}</div>
       </InfoRow>
       <InfoRow label="Modul ACES:">
-        <p>{getModules()}</p>
+        <div>{getModules()}</div>
       </InfoRow>
       <InfoRow label="Peserta:">
-        <p>{getPersons()}</p>
+        <div>{getPersons()}</div>
       </InfoRow>
       <InfoRow label="Grup & Skedul:">
-        <p>{getGroups()}</p>
+        <div>{getGroups()}</div>
       </InfoRow>
     </div>
   </>

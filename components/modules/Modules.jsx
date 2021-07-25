@@ -8,6 +8,11 @@ import Hero from "components/project/Hero"
 import Subhead from "components/project/Subhead"
 import NoModules from "./NoModules"
 
+// Data
+// useBatch(bid)
+// useModules()
+
+
 const Modules = ({ user, project, batch }) => { 
   const isAdmin = user.username == project.admin.username
   const { modules, isError: moduleError, isLoading: modulesLoading } = useModules()
@@ -90,8 +95,6 @@ const Modules = ({ user, project, batch }) => {
       </div>
     ))}
     </div>
-
-    {/* <pre>BATCH {JSON.stringify(batch, null, 2)}</pre> */}
 
     <style jsx>{`
     `}</style>

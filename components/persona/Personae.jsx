@@ -19,6 +19,8 @@ import PostModal from "components/PostModal"
 
 const prefetchFields='fullname,username,email,gender,birth,phone,group,nip,position,currentLevel,targetLevel';
 
+//  useBatchPersonae(batch._id, prefetchFields)
+
 const Personae = ({ user, project, batch, isLoading }) => {
   const isAdmin = user.username == project.admin.username
   const { 

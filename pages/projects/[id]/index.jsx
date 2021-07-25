@@ -72,7 +72,8 @@ const IndexPage = () => {
       <Overview user={user} project={project} batches={batches} mutate={mutateBatches} />
 
       <div className="prefetch hidden">
-        <Prefetch uri={`${APIROUTES.GET.PROJECTS}`} />
+        <Prefetch uri={`${APIROUTES.GET.MODULES}`} />
+        {batches.map(({ _id }) => <Prefetch key={_id} uri={`${APIROUTES.GET.BATCH}&bid=${_id}`} />)}
       </div>
     </div>
   )

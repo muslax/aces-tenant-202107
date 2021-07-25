@@ -20,14 +20,19 @@ import RuntimeGroups from "./RuntimeGroups"
  * 2. Only sims                 -> SimsOnly
  * 3. Only tests                -> TestsOnly
  * 4. Tests and sims            -> SimsAndTests
+ * 
+ * Use data:
+ * - useModules()
+ * - useBatchPersonae(batch._id, 'fullname,group')
+ * 
+ * 
  */
 
-/** */
 
 const Deployment = ({ user, project, batch }) => {
   const isAdmin = user.username == project.admin.username
   const { modules, isError: moduleError, isLoading: modulesLoading } = useModules()
-  const { personae, isLoading: personsLoading, isError: personsError, mutate: mutatePeronae } = useBatchPersonae(batch._id, 'fullname, group')
+  const { personae, isLoading: personsLoading, isError: personsError, mutate: mutatePeronae } = useBatchPersonae(batch._id, 'fullname,group')
 
   const [tests, setTests] = useState([])
   const [sims, setSims] = useState([])

@@ -12,6 +12,11 @@ import BatchInfo from "./BatchInfo"
 import BatchTable from "./BatchTable"
 import ProjectInfo from "./ProjectInfo"
 import PageLoading from "components/project/PageLoading"
+import Prefetch from "components/Prefetch"
+
+// useModules()
+// useUsers()
+// useBatches(pid)
 
 const Overview = ({ user, project, batches, mutate }) => {
   const pid = project._id
@@ -243,11 +248,6 @@ const Overview = ({ user, project, batches, mutate }) => {
           </div>
         </FormRow>
       </div>
-      {/* <pre>
-        PID: {project._id}<br/>
-        TITLE: {title}<br/>
-        DATE: {date1}
-      </pre> */}
     </div>
     }
 
@@ -257,6 +257,13 @@ const Overview = ({ user, project, batches, mutate }) => {
       setCurrentBatch={setCurrentBatch}
       isAdmin={isAdmin}
     />
+
+    {/* <pre>{JSON.stringify(batches, null, 2)}</pre> */}
+    
+    {/* When current batch changes, prefetch batch personae */}
+    <div className="prefetch hidden">
+      <Prefetch uri={`${APIROUTES.GET.BATCH_PERSONAE}&bid=${currentBatch._id}&fields=fullname,group`} />
+    </div>
   </>
 }
 
