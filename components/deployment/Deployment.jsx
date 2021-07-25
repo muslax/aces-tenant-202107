@@ -37,7 +37,7 @@ const Deployment = ({ user, project, batch }) => {
   const [schedules, setSchedules] = useState([])
 
   useEffect(() => {
-    if (personae) {
+    if (personae && personae.length > 0) {
       const _groups = createGroups(personae)
       setGroups(_groups)
       setSchedules(createSchedules(_groups))
