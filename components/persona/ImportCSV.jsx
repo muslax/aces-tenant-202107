@@ -47,6 +47,7 @@ const ImportCSV = ({ user, project,batch }) => {
 
     // if (res) {
       mutate(`${APIROUTES.GET.BATCH_PERSONAE}&bid=${batch._id}`)
+      mutate(`${APIROUTES.GET.BATCHES}&bid=${batch._id}`)
       setSubmitting(false);
       router.push(`/projects/${project._id}/persona`)
     // }

@@ -1,29 +1,37 @@
 export default function BatchInfo({ batch, modules }) {
 
   function getPersons() {
-    if (batch.personae == 0) return <span className="text-red-500">Data belum tersedia</span>;
+    if (batch.personae == 0) return <span className="text-red-500">Belum tersedia data</span>;
     return <>
       <span className="font-bold">{batch.personae}</span>
       <span className="text-gray-500 ml-2">orang</span>
     </>;
   }
 
-  function getModules() {
-    if (batch.modules.length == 0) return <span className="text-red-500">Modul belum terinstal</span>;
-    const mtests = <>
-      <span className="">{batch.tests.length}</span>
-      <span className="ml-2">tes mandiri </span>
+  function getTests() {
+    if (batch.tests.length == 0 && batch.sims.length == 0) return (
+      <span className="text-red-500">Belum terinstal</span>
+    )
+    if (batch.tests.length == 0 && batch.sims.length > 0) return (
+      <span className="text-gray-400">- Tidak ada</span>
+    )
+    return <>
+      <span className="font-bold">{batch.tests.length}</span>
+      <span className="text-gray-500 ml-2">modul</span>
     </>;
-    const mguided = <>
-      <span className="">{batch.sims.length}</span>
-      <span className="ml-2">temu muka</span>
-    </>;
+  }
 
-    if (batch.tests.length > 0 && batch.sims.length == 0) return mtests;
-    else if (batch.sims.length > 0 && batch.tests.length == 0) return mguided;
-    return <div className="text-gray--400 font-bold">
-      {mtests} <span className="text-gray-400 font-normal mx-2">&ndash;</span> {mguided}
-    </div>;
+  function getSims() {
+    if (batch.tests.length == 0 && batch.sims.length == 0) return (
+      <span className="text-red-500">Belum terinstal</span>
+    )
+    if (batch.sims.length == 0 && batch.tests.length > 0) return (
+      <span className="text-gray-400">- Tidak ada</span>
+    )
+    return <>
+      <span className="font-bold">{batch.sims.length}</span>
+      <span className="text-gray-500 ml-2">kali</span>
+    </>;
   }
 
   function getGroups() {
@@ -42,8 +50,11 @@ export default function BatchInfo({ batch, modules }) {
       <InfoRow label="Tanggal:">
         <div className="font-bold">{batch.date1}</div>
       </InfoRow>
-      <InfoRow label="Modul ACES:">
-        <div>{getModules()}</div>
+      <InfoRow label="Tes mandiri:">
+        <div>{getTests()}</div>
+      </InfoRow>
+      <InfoRow label="Tes temumuka:">
+        <div>{getSims()}</div>
       </InfoRow>
       <InfoRow label="Peserta:">
         <div>{getPersons()}</div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { StatusOnlineIcon, TrashIcon, PencilAltIcon, XIcon } from '@heroicons/react/solid'
+import { BeakerIcon, StatusOnlineIcon, TrashIcon, PencilAltIcon, UsersIcon, XIcon } from '@heroicons/react/solid'
 import { CheckCircleIcon } from '@heroicons/react/outline'
 
 import fetchJson from "lib/fetchJson"
@@ -42,12 +42,14 @@ const BatchTable = ({ batches, currentBatch, setCurrentBatch, isAdmin }) => {
   return <>
     <div className="border-t border-b border-green-500 border-opacity-50 hover:border-opacity-80">
       {batches.map(batch => 
-        <div key={batch._id} className="h-12 px-1 flex items-center space-x-3 border-b border-green-500 border-opacity-50 last:border-none">
+        <div key={batch._id} className="h-12 px-1 flex items-center space-x-2 border-b border-green-500 border-opacity-50 last:border-none">
           {batch.protected && <StatusOnlineIcon className={`flex-shrink-0 w-5 h-5 text-gray-600`}/>}
           {!batch.protected && <StatusOnlineIcon className={`flex-shrink-0 w-5 h-5 
             ${batch._id == currentBatch._id ? 'text-green-500' : 'text-gray-300'}`}
           />}
-          <div className="flex-shrink-0">{batch.date1}</div>
+          <BeakerIcon className={`flex-shrink-0 w-4 h-4 ${batch.modules.length > 0 ? 'text-indigo-400' : 'text-gray-300'}`}/>
+          <UsersIcon className={`flex-shrink-0 w-4 h-4 ${batch.personae > 0 ? 'text-gray-500' : 'text-gray-300'}`}/>
+          <div className="hidden xs:block flex-shrink-0">{batch.date1}</div>
           
           {(!selected || selected._id != batch._id) && (
             <div className="flex-grow overflow-hidden">
@@ -93,7 +95,7 @@ const BatchTable = ({ batches, currentBatch, setCurrentBatch, isAdmin }) => {
               onClick={e => setSelected(batch)}
             >
               <PencilAltIcon className={`w-4 h-4 ${!isAdmin ? 'text-gray-300' : 'text-green-500'}`} />
-              <span>Rename</span>
+              <span className="hidden xs:block">Rename</span>
             </button>
             <button 
               disabled={!isAdmin || isDisabled(batch)}
@@ -102,7 +104,7 @@ const BatchTable = ({ batches, currentBatch, setCurrentBatch, isAdmin }) => {
               onClick={e => setToBeDeleted(batch)}
             >
               <TrashIcon className={`w-4 h-4 ${!isAdmin || isDisabled(batch) ? 'text-gray-300' : 'text-red-400'}`} />
-              <span>Delete</span>
+              <span className="hidden xs:block">Delete</span>
             </button>
           </>}
           {(selected && selected._id == batch._id) && (
