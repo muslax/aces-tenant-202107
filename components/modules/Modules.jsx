@@ -30,17 +30,30 @@ const Modules = ({ user, project, batch }) => {
   }
 
   return <>
-    <Hero project={project} title="ACES Modules" batch={batch} />
+    <Hero project={project} title="ACES Modules" batch={batch}>
+      {isAdmin && 
+        <Link href={`/projects/${project._id}/setup-modules`}>
+          <a className="project-button px-3">
+            Edit
+            <span className="hidden xs:inline ml-1">Modules</span>
+          </a>
+        </Link>
+      }
+    </Hero>
 
     <Subhead title="Modul Mandiri">
-      {isAdmin && 
+      {/* {isAdmin && 
         <Link href={`/projects/${project._id}/setup-modules`}>
           <a className="project-button px-3">Add / Remove</a>
         </Link>
-      }
+      } */}
     </Subhead>
 
     <hr className="mt-2 mb-4 border-yellow-500 border-opacity-50"/>
+
+    {batch.tests.length == 0 && <p>
+      Batch ini tidak memiliki modul test mandiri.
+    </p>}
 
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-4- gap-4">
     {modules.filter(m => batch.tests.includes(m._id)).map(m => (
@@ -60,6 +73,10 @@ const Modules = ({ user, project, batch }) => {
     <Subhead title="Modul Temumuka" />
 
     <hr className="mt-2 mb-4 border-yellow-500 border-opacity-50"/>
+
+    {batch.sims.length == 0 && <p>
+      Batch ini tidak memiliki modul temumuka.
+    </p>}
 
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-4- gap-4">
     {modules.filter(m => batch.sims.includes(m._id)).map(m => (

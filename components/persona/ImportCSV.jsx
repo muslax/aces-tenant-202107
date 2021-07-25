@@ -227,6 +227,10 @@ const ImportCSV = ({ user, project,batch }) => {
 
       {!warning && (
         <div className="py-4">
+          {/* <br/> */}
+    <h2 className="text-2xl text-gray-600 font-light">
+      Upload CSV File
+    </h2>
           <CSVReader
             ref={buttonRef}
             onFileLoad={handleOnFileLoad}
@@ -239,7 +243,8 @@ const ImportCSV = ({ user, project,batch }) => {
             {({ file }) => (
               <>
               <div className="mb-3 pt-6">
-                <h2 className="text-lg font-bold text-green-600 mb-5">Pilih file CSV</h2>
+                {/* <h2 className="text-lg font-bold text-green-600 mb-5">Pilih file CSV</h2> */}
+                {/* <p>Pilih file </p> */}
                 
                 <div className="flex items-center">
                   <div className="w-3/5 flex">

@@ -72,7 +72,12 @@ const Overview = ({ user, project, batches, mutate }) => {
   }
   
   return <>
-    <Hero project={project} isIndex />
+    <Hero project={project} isIndex>
+      {/* <button 
+        className="project-button px-3"
+        onClick={e => setInfo("project")}
+      >Project Info</button> */}
+    </Hero>
 
     {/*  */}
     <div className="relative">

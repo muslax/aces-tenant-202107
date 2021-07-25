@@ -1,23 +1,27 @@
 import { FolderIcon, IdentificationIcon, StatusOnlineIcon } from '@heroicons/react/solid';
 
-const Hero = ({ project, batch, title, isIndex }) => {
+const Hero = ({ project, batch, title, isIndex, children }) => {
   return <>
     <div className="pt-3 pb-6 border--b">
-      <div className="h-12 pb-1 flex items-end">
+      <div className="h-12 pb-1 flex items-center space-x-4">
         {isIndex && (
-          <h2 className="text-2xl text-gray-400 font-medium truncate">
+          <h2 className="flex-grow text-2xl text-gray-400 font-medium truncate">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-green-400">
               {project? project.title : '...'}
             </span>
           </h2>
         )}
         {!isIndex && (
-          <h2 className="text-2xl text-gray-400 font-light">
+          <h2 className="flex-grow text-2xl text-gray-400 font-light">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-500 to-gray-800">
               {title}
             </span>
           </h2>
         )}
+        <div className="">
+          {/* <button className="project-button px-2">BUTTON</button> */}
+          {children}
+        </div>
       </div>
     
       {isIndex && (

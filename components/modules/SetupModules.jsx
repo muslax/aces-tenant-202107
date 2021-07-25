@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/router";
-import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/solid";
+import { ChevronDownIcon, ChevronRightIcon, EyeIcon, EyeOffIcon, InformationCircleIcon } from "@heroicons/react/solid";
+// import { InformationCircleIcon } from "@heroicons/react/outline";
 
 import useBatch from "hooks/useBatch"
 import useModules from "hooks/useModules"
@@ -200,44 +201,42 @@ const SetupModules = ({ user, project, localBatch }) => {
   // }
 
   return <>
-    <Hero project={project} title="ACES Modules" batch={currentBatch} />
+    {/* <Hero project={project} title="ACES Modules" batch={currentBatch} /> */}
+    <br/>
+    <h2 className="text-2xl text-gray-600 font-light">
+      Select Modules
+    </h2>
 
-    <Subhead title="Daftar Modul">
-      {/* {isAdmin && 
-        <Link href={`/projects/${project._id}/setup-modules`}>
-          <a className="project-button px-3">Add / Remove</a>
-        </Link>
-      } */}
-      CANCEL??
-    </Subhead>
+    {/* <hr className="mt-2 mb-3 border-yellow-500 border-opacity-50"/> */}
+    <hr className="mt-2 mb-3 border-none"/>
 
-    <hr className="mt-2 mb-4"/>
-
-    <div className="flex items-center space-x-4 mb-3">
+    <div className="flex items-center space-x-4 mb-5 px-1">
       <div className="flex-grow pt-2">
       {showDescription && <button
-          className="flex items-center text-blue-500"
+          className="flex items-center space-x-1 text-gray-600"
           onClick={e => setShowDescription(!showDescription)}
         >
-          <span>Hide description</span>
-          <ChevronDownIcon className="w-5 h-5" />
+          <InformationCircleIcon className="w-5 h-5 text-green-500" />
+          <span>Show Description</span>
+          {/* <ChevronDownIcon className="w-5 h-5" /> */}
         </button>}
         {!showDescription && <button
-          className="flex items-center text-blue-500"
+          className="flex items-center space-x-1 text-gray-600"
           onClick={e => setShowDescription(!showDescription)}
         >
-          <span>Show description</span>
-          <ChevronRightIcon className="w-5 h-5" />
+          <InformationCircleIcon className="w-5 h-5 text-gray-400" />
+          <span>Show Description</span>
+          {/* <ChevronRightIcon className="w-5 h-5" /> */}
         </button>}
       </div>
-      <div className="text-xs">
+      <div className="text--xs">
         <Link href={`/projects/${project._id}/modules`}>
-          <a className="inline-flex items-center h-7 rounded-sm border px-3 py-1- text-red-400">Cancel</a>
+          <a className="inline-flex items-center px-3 pt-2 text-red-600 text-opacity-80 hover:text-opacity-100">Cancel</a>
         </Link>
       </div>
     </div>
 
-    <div className="border-t border-gray-300">
+    <div className="border-t border-green-500 border-opacity-60">
     {modules.sort((a, b) => {
       if (a.order > b.order) return 1;
       else if (a.order < b.order) return -1;
@@ -245,7 +244,7 @@ const SetupModules = ({ user, project, localBatch }) => {
     }).map(m => (
       <div
         key={m._id}
-        className="flex items-start space-x-4 border-b px-2 py-2"
+        className="flex items-start space-x-4 border-b border-green-500 border-opacity-60 px-2 py-2"
       >
         <div className="flex-shrink-0 flex space-x-3 py-px">
           {currentBatch.modules.length > 0 && <input
@@ -287,8 +286,8 @@ const SetupModules = ({ user, project, localBatch }) => {
       >Save Modules</button>
     </div>
 
-    <pre>orderedSelection {JSON.stringify(orderedSelection, null, 2)}</pre>
-    <pre>{JSON.stringify(currentBatch, null, 2)}</pre>
+    {/* <pre>orderedSelection {JSON.stringify(orderedSelection, null, 2)}</pre> */}
+    {/* <pre>{JSON.stringify(currentBatch, null, 2)}</pre> */}
 
     <style jsx>{`
     `}</style>

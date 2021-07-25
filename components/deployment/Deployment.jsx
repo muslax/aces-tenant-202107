@@ -76,6 +76,30 @@ const Deployment = ({ user, project, batch }) => {
     />
   }
 
+  if (batch.tests.length == 0 && batch.sims.length > 0) {
+    return <>
+      <Hero project={project} title="Deployment" batch={batch} />
+      
+      <Subhead title="Tes Mandiri (Online)"></Subhead>
+      {/* <hr className="mt-2 mb-2 border-yellow-500 border-opacity-50"/> */}
+      <p>Batch ini tidak memiliki modul test mandiri.</p>
+
+      <hr className="h-8 border-none" />
+
+      <Subhead title="Skedul Pelaksanaan"></Subhead>
+      <hr className="h-2 border-none" />
+      <div className="overflow-x-scroll">
+        <Schedule groups={schedules} />
+      </div>   
+
+      <hr className="h-8 border-none" />
+
+      <Subhead title="Grouping"></Subhead>
+      <hr className="h-2 border-none" />
+      <RuntimeGroups groups={schedules} />
+    </>
+  }
+
   return <>
     <Hero project={project} title="Deployment" batch={batch} />
     
@@ -95,12 +119,15 @@ const Deployment = ({ user, project, batch }) => {
       )}
       </div>
     </Subhead>
+    {batch.tests.length == 0 && <p>
+      Batch ini tidak memiliki modul test mandiri.
+    </p>}
     <hr className="h-2 border-none" />
     <TestsInfo batch={batch} mode={mode} setMode={setMode} />
 
     <hr className="h-8 border-none" />
     <Subhead title="Skedul Pelaksanaan"></Subhead>
-    <hr className="h-2 border-none" />
+    {/* <hr className="h-2 border-none" /> */}
     {sims.length == 0 && 
       <p>Tidak ada modul temumuka yang memerlukan penjadwalan.</p>
     }

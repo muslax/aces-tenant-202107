@@ -115,7 +115,16 @@ const Personae = ({ user, project, batch, isLoading }) => {
   }
 
   return <>
-    <Hero project={project} title="ACES Persona" batch={batch} />
+    <Hero project={project} title="ACES Persona" batch={batch}>
+      {isAdmin && 
+        <Link href={`/projects/${project._id}/import-csv`}>
+          <a
+            disabled={form}
+            className="project-button px-4"
+          >Upload<span className="hidden xs:inline">&nbsp;CSV</span></a>
+        </Link>
+      }
+    </Hero>
 
     <div className="">
       <div className="flex items-center space-x-4 mb-4">
@@ -153,12 +162,12 @@ const Personae = ({ user, project, batch, isLoading }) => {
               }
             }}
           >Add<span className="hidden sm:inline">&nbsp;Names</span></button>
-          <Link href={`/projects/${project._id}/import-csv`}>
+          {/* <Link href={`/projects/${project._id}/import-csv`}>
             <a
               disabled={form}
               className="project-button px-4"
             >Import<span className="hidden sm:inline">&nbsp;CSV</span></a>
-          </Link>
+          </Link> */}
         </>}
         {!isAdmin && <>
           <button
@@ -175,36 +184,7 @@ const Personae = ({ user, project, batch, isLoading }) => {
 
       <hr className="mt-2 mb-4 border-yellow-500 border-opacity-50"/>
 
-      {form && (
-      <div className="mb-4">
-        <p className="font--light mb-1">
-          Masukkan satu atau lebih nama lengkap.
-          Setiap baris mewakili satu nama.
-        </p>
-        <textarea
-          rows={4}
-          autoFocus
-          value={rawNames}
-          onChange={e => setRawNames(e.target.value)}
-          className={`w-full rounded border border-gray-300 text-sm px-3 py-2
-          border-gray-300 focus:bg-white focus:border-blue-300 focus:ring-blue-100
-          `}
-        ></textarea>
-        <div className="pt-2 flex items-center justify-center space-x-3">
-          <button
-            className={`rounded text-xs font-bold text-white px-5 h-8
-            bg-green-500 hover:bg-green-600 focus:border--blue-300 focus:outline-none
-            focus:ring-1 focus:ring-offset-1 focus:ring-green-400`}
-            onClick={saveNames}
-          >Save Names</button>
-          <button
-            className={`rounded text-xs font-medium text-gray-500 hover:text-red-400 px-5 h-8
-          border border-gray-300 hover:border-gray-400 focus:outline-none focus:ring-none`}
-          onClick={e => setForm(false)}
-          >Cancel</button>
-        </div>
-      </div>
-      )}
+      
 
       <div className="border-b border-green-500 border-opacity-50 pb-4">
         {getList().length > 0 && (
@@ -273,6 +253,55 @@ const Personae = ({ user, project, batch, isLoading }) => {
         </tbody>
       ))}
       </table>
+
+      <br/><br/>
+
+      {isAdmin && !form && (
+        <div className="text-center">
+          <button
+            className="project-button px-4"
+            onClick={e => {
+              if (!form) {
+                setForm(true);
+                setViewStack([]);
+              }
+            }}
+          >Add<span className="hidden sm:inline">&nbsp;Names</span></button>
+        </div>
+      )}
+
+      {form && (
+      <div className="mb-4">
+        <p className="font--light mb-1">
+          Masukkan satu atau lebih nama lengkap.
+          Setiap baris mewakili satu nama.
+        </p>
+        <textarea
+          rows={4}
+          autoFocus
+          value={rawNames}
+          onChange={e => setRawNames(e.target.value)}
+          className={`w-full rounded border border-gray-300 text-sm px-3 py-2
+          border-gray-300 focus:bg-white focus:border-blue-300 focus:ring-blue-100
+          `}
+        ></textarea>
+        <div className="pt-2 flex items-center justify-center space-x-3">
+          <button
+            className={`rounded text-xs font-bold text-white px-5 h-8
+            bg-green-500 hover:bg-green-600 focus:border--blue-300 focus:outline-none
+            focus:ring-1 focus:ring-offset-1 focus:ring-green-400`}
+            onClick={saveNames}
+          >Save Names</button>
+          <button
+            className={`rounded text-xs font-medium text-gray-500 hover:text-red-400 px-5 h-8
+          border border-gray-300 hover:border-gray-400 focus:outline-none focus:ring-none`}
+          onClick={e => setForm(false)}
+          >Cancel</button>
+        </div>
+      </div>
+      )}
+
+      
 
       {/* <pre>{JSON.stringify(currentBatch, null, 2)}</pre> */}
       {/* <pre>{JSON.stringify(viewStack, null, 2)}</pre> */}
