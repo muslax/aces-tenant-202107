@@ -53,7 +53,7 @@ const PersonaPage = () => {
       />
 
       <div className="prefetch hidden">
-        <Prefetch uri={`${APIROUTES.GET.PROJECTS}`} />
+        <Prefetch uri={`${APIROUTES.GET.BATCH_GROUPS}&bid=${batch._id}`} />
       </div>
     </div>
   )

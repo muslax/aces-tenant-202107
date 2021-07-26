@@ -12,17 +12,11 @@ import BatchNotReady from "./BatchNotReady"
 import TestsInfo from "./TestsInfo"
 import Schedule from "./Schedule"
 import Groups from "./Groups"
-import RuntimeGroups from "./RuntimeGroups"
 import fetchJson from "lib/fetchJson"
 import { APIROUTES } from "config/routes"
 import { generatePOSTData } from "lib/utils"
 import useBatchGroups from "hooks/useBatchGroups"
 import FixedOverlay from "components/FixedOverlay"
-
-// Use data:
-// - useModules()
-// - useBatchPersonae(batch._id, 'fullname,group')
-// - useGroups
 
 const Deployment = ({ user, project, batch }) => {
   const isAdmin = user.username == project.admin.username
@@ -37,22 +31,33 @@ const Deployment = ({ user, project, batch }) => {
   const [groups, setGroups] = useState([])
   const [schedules, setSchedules] = useState([])
   const [names, setNames] = useState({})
+  const [missingNames, setMissingNames] = useState([])
   const [submitting, setSubmitting] = useState(false)
+  const [swappingEnabled, setSwappingEnabled] = useState(false)
 
   useEffect(() => {
-    if (personae && personae.length > 0) {
+    if (remoteGroups && personae) {
       const _groups = createGroups(personae)
       setGroups(_groups)
       setSchedules(createSchedules(batch._id, _groups))
 
       // Populate names key-val
-      const o = {}
+      const namesKV = {}
       personae.forEach(({ _id, fullname }) => {
-        o[_id] = fullname
+        namesKV[_id] = fullname
       })
-      setNames(o)
+      setNames(namesKV)
+
+      // Find deleted names
+      let array = []
+      remoteGroups.forEach(g => {
+        g.persons.forEach(id => {
+          if (!namesKV[id]) array.push(id)
+        })
+      })
+      setMissingNames(array)
     }
-  }, [personae])
+  }, [remoteGroups, personae])
   
   useEffect(() => {
     if (batch && modules) {
@@ -88,6 +93,7 @@ const Deployment = ({ user, project, batch }) => {
     console.log(resp)
     mutateGroups()
     setSubmitting(false)
+    setSwappingEnabled(false)
   }
 
   if (modulesLoading || groupsLoading || personsLoading) {
@@ -150,38 +156,46 @@ const Deployment = ({ user, project, batch }) => {
         <hr className="h-2 border-none" />
         
         <div className="overflow-x-scroll">
-          <Schedule groups={schedules} remoteGroups={remoteGroups} />
+          <Schedule 
+            groups={schedules} 
+            remoteGroups={remoteGroups} 
+            names={names} 
+            isAdmin={isAdmin}
+            saveGroupSchedules={saveGroupSchedules}
+          />
         </div>
 
         <hr className="h-8 border-none" />
 
-        <Subhead title="Grouping"></Subhead>
+        <Subhead title="Grouping">
+          {missingNames.length == 0 && 
+          <label className="w-auto flex items-center space-x-2 text-gray-600 cursor-pointer">
+            <input type="checkbox"
+              className="rounded-sm text-green-500 focus:outline-none focus:ring-0"
+              onChange={e => setSwappingEnabled(e.target.checked)}
+            />
+            <span>Enable group swapping</span>
+          </label>}
+        </Subhead>
 
-        <hr className="h-2 border-none" />
+        <hr className="mt-2 mb-2 border-yellow-500 border-opacity-50"/>
 
-        {/* <RuntimeGroups groups={schedules} remoteGroups={remoteGroups} /> */}
         <Groups 
           groups={schedules} 
           remoteGroups={remoteGroups} 
+          swappingEnabled={swappingEnabled}
           names={names} 
           isAdmin={isAdmin} 
           setSchedules={setSchedules}
+          saveGroupSchedules={saveGroupSchedules}
         />
       </>
     }
 
-    <hr className="h-8 border-none" />
-
     {/* Deployment action */}
     <Subhead title="Deployment Status" />
 
-    {/* Case on sims */}
-    <div className="">
-      <button
-        className="button-project h-9 bg-green-500 px-4"
-        onClick={saveGroupSchedules}
-      >Confirm grouping & schedules</button>
-    </div>
+    <hr className="mt-2 mb-2 border-yellow-500 border-opacity-50"/>
 
     {submitting && <FixedOverlay>
       <div className="w-2/5 rounded bg-white p-1 shadow-md">
