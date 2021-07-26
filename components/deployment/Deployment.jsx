@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import Link from "next/link"
 import { PencilAltIcon } from "@heroicons/react/outline"
 
 import useModules from "hooks/useModules"
@@ -12,27 +11,24 @@ import Subhead from "components/project/Subhead"
 import BatchNotReady from "./BatchNotReady"
 import TestsInfo from "./TestsInfo"
 import Schedule from "./Schedule"
+import Groups from "./Groups"
 import RuntimeGroups from "./RuntimeGroups"
+import fetchJson from "lib/fetchJson"
+import { APIROUTES } from "config/routes"
+import { generatePOSTData } from "lib/utils"
+import useBatchGroups from "hooks/useBatchGroups"
+import FixedOverlay from "components/FixedOverlay"
 
-/**
- * CASES
- * 1. No modules or no persons  -> BatchNotReady
- * 2. Only sims                 -> SimsOnly
- * 3. Only tests                -> TestsOnly
- * 4. Tests and sims            -> SimsAndTests
- * 
- * Use data:
- * - useModules()
- * - useBatchPersonae(batch._id, 'fullname,group')
- * 
- * 
- */
-
+// Use data:
+// - useModules()
+// - useBatchPersonae(batch._id, 'fullname,group')
+// - useGroups
 
 const Deployment = ({ user, project, batch }) => {
   const isAdmin = user.username == project.admin.username
-  const { modules, isError: moduleError, isLoading: modulesLoading } = useModules()
+  const { groups: remoteGroups, isError: groupsError, isLoading: groupsLoading, mutate: mutateGroups } = useBatchGroups(batch._id)
   const { personae, isLoading: personsLoading, isError: personsError, mutate: mutatePeronae } = useBatchPersonae(batch._id, 'fullname,group')
+  const { modules, isError: moduleError, isLoading: modulesLoading } = useModules()
 
   const [tests, setTests] = useState([])
   const [sims, setSims] = useState([])
@@ -40,12 +36,21 @@ const Deployment = ({ user, project, batch }) => {
 
   const [groups, setGroups] = useState([])
   const [schedules, setSchedules] = useState([])
+  const [names, setNames] = useState({})
+  const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
     if (personae && personae.length > 0) {
       const _groups = createGroups(personae)
       setGroups(_groups)
-      setSchedules(createSchedules(_groups))
+      setSchedules(createSchedules(batch._id, _groups))
+
+      // Populate names key-val
+      const o = {}
+      personae.forEach(({ _id, fullname }) => {
+        o[_id] = fullname
+      })
+      setNames(o)
     }
   }, [personae])
   
@@ -65,7 +70,27 @@ const Deployment = ({ user, project, batch }) => {
 
   }, [batch, modules])
 
-  if (modulesLoading || personsLoading) {
+  async function saveGroupSchedules(e) {
+    setSubmitting(true)
+
+    // Tentative: using default slots
+    const slots = ['08.00', '10.00', '13.00', '15.00']
+    // const body = generateSchedulesData(batch._id, slots, schedules)
+    // console.log(body)
+    const resp = await fetchJson(
+      APIROUTES.POST.SAVE_GROUP_SCHEDULES, 
+      generatePOSTData({
+        bid: batch._id,
+        slots: slots,
+        groups: schedules, // with fake ids
+      })
+    )
+    console.log(resp)
+    mutateGroups()
+    setSubmitting(false)
+  }
+
+  if (modulesLoading || groupsLoading || personsLoading) {
     return <PageLoading 
       project={project} 
       batch={batch} 
@@ -73,6 +98,7 @@ const Deployment = ({ user, project, batch }) => {
     />
   }
 
+  // Not ready
   if (batch.personae == 0 || batch.modules.length == 0) {
     return <BatchNotReady 
       project={project}
@@ -81,36 +107,15 @@ const Deployment = ({ user, project, batch }) => {
     />
   }
 
-  if (batch.tests.length == 0 && batch.sims.length > 0) {
-    return <>
-      <Hero project={project} title="Deployment" batch={batch} />
-      
-      <Subhead title="Tes Mandiri (Online)"></Subhead>
-      {/* <hr className="mt-2 mb-2 border-yellow-500 border-opacity-50"/> */}
-      <p>Batch ini tidak memiliki modul test mandiri.</p>
-
-      <hr className="h-8 border-none" />
-
-      <Subhead title="Skedul Pelaksanaan"></Subhead>
-      <hr className="h-2 border-none" />
-      <div className="overflow-x-scroll">
-        <Schedule groups={schedules} />
-      </div>   
-
-      <hr className="h-8 border-none" />
-
-      <Subhead title="Grouping"></Subhead>
-      <hr className="h-2 border-none" />
-      <RuntimeGroups groups={schedules} />
-    </>
-  }
+  // 
+  if (schedules.length == 0) return <>OOOOOOO</>
 
   return <>
     <Hero project={project} title="Deployment" batch={batch} />
-    
+
     <Subhead title="Tes Mandiri (Online)">
       <div className="pr-2">
-      {isAdmin && mode == "reading" && (
+      {isAdmin && batch.tests.length > 0 && mode == "reading" && (
         <button 
         className="group text-green-500 hover:text-green-600 flex items-center space-x-1 h--7"
         onClick={e => {
@@ -124,46 +129,75 @@ const Deployment = ({ user, project, batch }) => {
       )}
       </div>
     </Subhead>
-    {batch.tests.length == 0 && <p>
-      Batch ini tidak memiliki modul test mandiri.
-    </p>}
-    <hr className="h-2 border-none" />
-    <TestsInfo batch={batch} mode={mode} setMode={setMode} />
+
+    { batch.tests.length == 0
+      ? <p>Batch ini tidak memiliki modul test mandiri.</p>
+      : <>
+        <hr className="h-2 border-none" />
+        <TestsInfo batch={batch} mode={mode} setMode={setMode} />
+      </>
+    }
 
     <hr className="h-8 border-none" />
-    <Subhead title="Skedul Pelaksanaan"></Subhead>
-    {/* <hr className="h-2 border-none" /> */}
-    {sims.length == 0 && 
-      <p>Tidak ada modul temumuka yang memerlukan penjadwalan.</p>
+
+    { batch.sims.length == 0
+      ? <>
+        <Subhead title="Grouping & Skedul Pelaksanaan"></Subhead>
+        <p>Batch ini tidak memerlukan grouping dan penjadwalan.</p>
+      </>
+      : <>
+        <Subhead title="Skedul Pelaksanaan"></Subhead>
+        <hr className="h-2 border-none" />
+        
+        <div className="overflow-x-scroll">
+          <Schedule groups={schedules} remoteGroups={remoteGroups} />
+        </div>
+
+        <hr className="h-8 border-none" />
+
+        <Subhead title="Grouping"></Subhead>
+
+        <hr className="h-2 border-none" />
+
+        {/* <RuntimeGroups groups={schedules} remoteGroups={remoteGroups} /> */}
+        <Groups 
+          groups={schedules} 
+          remoteGroups={remoteGroups} 
+          names={names} 
+          isAdmin={isAdmin} 
+          setSchedules={setSchedules}
+        />
+      </>
     }
-    {sims.length > 0 && (
-      <div className="overflow-x-scroll">
-        <Schedule groups={schedules} />
-      </div>
-    )}
 
     <hr className="h-8 border-none" />
-    <Subhead title="Grouping"></Subhead>
-    <hr className="h-2 border-none" />
-    {sims.length == 0 && 
-      <p>Tidak ada modul temumuka yang memerlukan grouping (pengelompokan).</p>
-    }
-    {sims.length > 0 && (
-      <div className="overflow-x-scroll">
-        <RuntimeGroups groups={schedules} />
+
+    {/* Deployment action */}
+    <Subhead title="Deployment Status" />
+
+    {/* Case on sims */}
+    <div className="">
+      <button
+        className="button-project h-9 bg-green-500 px-4"
+        onClick={saveGroupSchedules}
+      >Confirm grouping & schedules</button>
+    </div>
+
+    {submitting && <FixedOverlay>
+      <div className="w-2/5 rounded bg-white p-1 shadow-md">
+        <div className="rounded-sm border p-2">
+          <div className="progress border border-gray-400 h-2"></div>
+        </div>
       </div>
-    )}
+    </FixedOverlay>}
 
-    <pre>
-      {/* Persona 1: {JSON.stringify(personae[0], null, 2)}<br/> */}
-      {/* GROUPS 1: {JSON.stringify(groups[0], null, 2)}<br/> */}
-      {/* SCHEDULE 1: {JSON.stringify(schedules[0], null, 2)}<br/> */}
-    </pre>
-
-    {/* <pre>{JSON.stringify(batch, null, 2)}</pre> */}
-    {/* <pre>TESTS {JSON.stringify(tests, null, 2)}</pre> */}
-    {/* <pre>SIMS {JSON.stringify(sims, null, 2)}</pre> */}
-    {/* <pre>BATCH MODULELS{JSON.stringify(batchModules, null, 2)}</pre> */}
+    {/* <pre>BATCH ID {batch._id}</pre> */}
+    {/* <pre>Group 1: {JSON.stringify((groups[0]), null, 2)}</pre> */}
+    {/* <pre>Schedule 1: {JSON.stringify((schedules[0]), null, 2)}</pre> */}
+    {/* <pre>Remote group: {JSON.stringify((remoteGroups), null, 2)}</pre> */}
+    {/* <pre>{JSON.stringify(schedules[0], null, 2)}</pre> */}
+    {/* <pre>Person 1: {JSON.stringify((personae[0] || personae), null, 2)}</pre> */}
+    {/* <pre>Names KV {JSON.stringify(names, null, 2)}</pre> */}
   </>
 }
 

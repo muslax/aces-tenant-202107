@@ -3,8 +3,8 @@ export default function RuntimeGroups({ groups }) {
     <div className="">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {groups.map(group => (
-          <div key={group.groupName} className="border border-gray-400 border-opacity-50 px-3 py-2">
-            <div className="font-bold mb-2">{group.groupName}</div>
+          <div key={group.name} className="border border-gray-400 border-opacity-50 px-3 py-2">
+            <div className="font-bold mb-2">{group.name}</div>
             <div className="text-xs py-1 mb-2 border-t border-b">
               {group.slot1 == "selftest" && <div>
                 <table>
