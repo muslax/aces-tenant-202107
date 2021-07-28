@@ -6,6 +6,7 @@ export default function Schedule({ localGroups, remoteGroups, names, newNames, m
   const [theGroups, setTheGroups] = useState(localGroups)
   const [missingGroupIds, setMissingGroupIds] = useState([])
   const [useRemote, setUseRemote] = useState(false)
+  const [showWarning, setShowWarning] = useState(false)
 
   useEffect(() => {
     if (remoteGroups && remoteGroups.length >= 1) {
@@ -26,6 +27,14 @@ export default function Schedule({ localGroups, remoteGroups, names, newNames, m
       setTheGroups(localGroups)
     }
   }, [localGroups, remoteGroups, names])
+
+  useEffect(() => {
+    if (newNames.length > 0 || missingNames.length > 0) {
+      setShowWarning(true)
+    } else {
+      setShowWarning(false)
+    }
+  }, [newNames, missingNames])
 
   function getResolveWarning() {
     if (missingNames.length == 0 && newNames.length == 0) return false
@@ -90,7 +99,7 @@ export default function Schedule({ localGroups, remoteGroups, names, newNames, m
       <Subhead title="Skedul Pelaksanaan"></Subhead>
       <hr className="h-2 border-none" />
 
-      {missingNames.length > 0 && (
+      {showWarning && (
         <div className="border-t border-yellow-300 pt-2 mb-4">
           <p className="mb-3">
             <span className="font-bold">PERHATIAN: </span> 

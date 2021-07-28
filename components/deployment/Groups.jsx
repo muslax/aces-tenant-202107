@@ -22,16 +22,14 @@ export default function Groups({
   const [warning, setWarning] = useState([])
 
   useEffect(() => {
-    if (remoteGroups.length >= 1) {
+    if (remoteGroups.length >= 1) { // -> sometimes fails when using > 0
+      /* Only when we're working on persisted groups */
       setTheGroups(remoteGroups)
+      if (newNames.length > 0 || missingNames.length > 0) setGroupingResolved(false)
     } else {
       setTheGroups(localGroups)
     }
-  }, [localGroups, remoteGroups])
-
-  useEffect(() => {
-    if (newNames.length > 0 || missingNames.length > 0) setGroupingResolved(false)
-  }, [newNames, missingNames])
+  }, [localGroups, remoteGroups, newNames, missingNames])
 
   useEffect(() => {
     if (!swappingEnabled) {
@@ -46,6 +44,7 @@ export default function Groups({
     setSelectedIds([])
     setSelections([])
     setWarning([])
+    setTheGroups(remoteGroups)
   }
 
   function getResolveWarning() {
@@ -112,6 +111,9 @@ export default function Groups({
   : "rounded-sm border border-gray-300 px-2 py-2"
 
   return <div id="batch-grouping">
+    {/* <pre>
+      NEW: {newNames.length} - MIS: {missingNames.length}
+    </pre> */}
     <Subhead title="Grouping">
       <label className={`w-auto flex items-center space-x-2 text-gray-${groupingResolved ? '600' : '400'} cursor-pointer`}>
         <input 
@@ -121,13 +123,13 @@ export default function Groups({
           disabled:border-gray-300`}
           onChange={e => setSwappingEnabled(e.target.checked)}
         />
-        <span>Enable group swapping</span>
+        <span>Enable group {groupingResolved ? 'RSV' : 'NOT'}</span>
       </label>
     </Subhead>
 
     <hr className="mt-2 mb-2 border-yellow-500 border-opacity-50"/>
 
-    {!groupingResolved && remoteGroups.length >= 1 && (
+    {(newNames.length > 0 || missingNames.length > 0) && !groupingResolved && (
       <div className="border--t border-yellow-300 py--2 mb-2">
         <p className="mb-3">
           <span className="font-bold">PERHATIAN: </span> 
@@ -148,7 +150,8 @@ export default function Groups({
       </div>
     )}
 
-    {warning.length > 0 && (
+    {/* Show warning only when we're working on persisted groups */}
+    {remoteGroups.length > 0 && warning.length > 0 && (
       <div className="border--t border-yellow-300 py--2 mb-2">
         <ul className="list-disc text-red-400 pl-4 mb-3">
           {warning.map(w => <li>{w}</li>)}

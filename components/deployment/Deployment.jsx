@@ -33,7 +33,7 @@ const Deployment = ({ user, project, batch }) => {
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
-    if (remoteGroups && personae) {
+    if (remoteGroups && personae && personae.length > 0) {
       const _groups = createGroups(personae)
       setLocalGroups(createSchedules(batch._id, _groups))
 

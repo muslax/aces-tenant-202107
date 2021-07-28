@@ -14,6 +14,7 @@ import Hero from "components/project/Hero"
 import Subhead from "components/project/Subhead"
 import NoPersonae from "./NoPersonae"
 import PersonDetail from "./PersonDetail"
+import EditDialog from "components/EditDialog"
 import FixedOverlay from "components/FixedOverlay"
 import PostModal from "components/PostModal"
 
@@ -311,7 +312,7 @@ const Personae = ({ user, project, batch, isLoading }) => {
 
       {modal && <PostModal message={modal} />}
 
-      {toDelete && (
+      {/* {toDelete && (
         <FixedOverlay>
           <div className="w-3/5 sm:w-80 rounded bg-yellow-200 border border-white shadow-md">
             <div className="flex items-center space-x-3 rounded-t bg--red-300 pl-3 pr-2 py-1">
@@ -331,7 +332,13 @@ const Personae = ({ user, project, batch, isLoading }) => {
             </div>
           </div>
         </FixedOverlay>
-      )}
+      )} */}
+      {toDelete && <EditDialog 
+        person={toDelete}
+        action="delete"
+        onCancel={e => setToDelete(null)}
+        onConfirm={deletePersona}
+      />}
     </div>
 
     {/* <pre>{JSON.stringify(persons, null, 2)}</pre> */}
