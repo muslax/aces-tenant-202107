@@ -99,7 +99,7 @@ export default function Schedule({ localGroups, remoteGroups, names, newNames, m
       <Subhead title="Skedul Pelaksanaan"></Subhead>
       <hr className="h-2 border-none" />
 
-      {showWarning && (
+      {showWarning && remoteGroups.length >= 1 && (
         <div className="border-t border-yellow-300 pt-2 mb-4">
           <p className="mb-3">
             <span className="font-bold">PERHATIAN: </span> 
