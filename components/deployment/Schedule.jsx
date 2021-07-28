@@ -1,40 +1,54 @@
 import { useEffect, useState } from "react";
 
-export default function Schedule({ groups, remoteGroups, names, isAdmin, saveGroupSchedules }) {
-  const [theGroups, setTheGroups] = useState(groups)
-  const [missingNames, setMissingNames] = useState([])
+import Subhead from "components/project/Subhead";
+
+export default function Schedule({ localGroups, remoteGroups, names, newNames, missingNames, isAdmin, saveGroupSchedules }) {
+  const [theGroups, setTheGroups] = useState(localGroups)
   const [missingGroupIds, setMissingGroupIds] = useState([])
   const [useRemote, setUseRemote] = useState(false)
-  const [groupHasChanged, setGroupHasChanged] = useState(false)
 
   useEffect(() => {
-    if (remoteGroups && remoteGroups.length > 0) {
+    if (remoteGroups && remoteGroups.length >= 1) {
       setTheGroups(remoteGroups)
       setUseRemote(true)
 
-      // Find deleted names
-      let array = []
+      // Detect which group has missing names
       let gids = []
       remoteGroups.forEach(g => {
         g.persons.forEach(id => {
           if (!names[id]) {
-            array.push(id)
             gids.push(g._id)
           }
         })
       })
-      setMissingNames(array)
       setMissingGroupIds(gids)
+    } else {
+      setTheGroups(localGroups)
     }
-  }, [remoteGroups, names])
+  }, [localGroups, remoteGroups, names])
 
-  async function saveChanges(e) {
-    await saveGroupSchedules(e)
-    setMissingNames([])
-    setGroupHasChanged(false)
+  function getResolveWarning() {
+    if (missingNames.length == 0 && newNames.length == 0) return false
+
+    const m = missingNames.length == 0 ? '' 
+    : <><span className="font-bold">{missingNames.length}</span> nama yang telah terhapus</>
+    const f = newNames.length == 0 ? ''
+    : <><span className="font-bold">{newNames.length}</span> nama baru (tambahan)</>
+
+    if (missingNames.length > 0 && newNames.length > 0) {
+      return (
+        <span className="text-red-400">Terdapat {m} dan {f}.</span>
+      ) 
+    } else if (missingNames.length > 0) {
+      return (
+        <span className="text-red-400">Terdapat {m}.</span>
+      ) 
+    } else if (newNames.length > 0) {
+      return (
+        <span className="text-red-400">Terdapat {f}.</span>
+      ) 
+    }
   }
-
-  if (!theGroups || theGroups.length == 0) return <p className="text-red-500">EMPTY</p>;
 
   let headStyle = useRemote
   ? "bg-green-50 border-t border-green-500 border-opacity-30"
@@ -73,38 +87,16 @@ export default function Schedule({ groups, remoteGroups, names, isAdmin, saveGro
 
   return (
     <div className="">
-      {!groupHasChanged && missingNames.length > 0 && (
+      <Subhead title="Skedul Pelaksanaan"></Subhead>
+      <hr className="h-2 border-none" />
+
+      {missingNames.length > 0 && (
         <div className="border-t border-yellow-300 pt-2 mb-4">
           <p className="mb-3">
             <span className="font-bold">PERHATIAN: </span> 
             <span className="text-red-500 ml-2">
-            Terdapat {missingNames.length} nama yang telah terhapus.
+              {getResolveWarning()}
             </span>
-          </p>
-          {isAdmin && <p>
-            <button 
-              className="project-button font-medium px-3 py-1"
-              onClick={e => {
-                setTheGroups(groups)
-                setGroupHasChanged(true)
-              }}
-            >Regroup & Reschedule</button>
-          </p>}
-        </div>
-      )}
-      {groupHasChanged && (
-        <div className="border-t border-yellow-300 py-2 mb-4">
-          <p className="mb-3">
-            {/* <span className="font-bold">PERHATIAN: </span>  */}
-            <span className="text-gray-600 ml--2">
-            Regrouping & rescheduling berhasil. Klik tombol di bawah untuk menyimpan perubahan.
-            </span>
-          </p>
-          <p>
-            <button 
-              className="project-button bg-green-400 hover:bg-green-500 text-white font-medium px-4 py-1"
-              onClick={saveChanges}
-            >Save Changes</button>
           </p>
         </div>
       )}

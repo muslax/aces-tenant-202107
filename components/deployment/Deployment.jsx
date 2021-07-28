@@ -3,7 +3,11 @@ import { PencilAltIcon } from "@heroicons/react/outline"
 
 import useModules from "hooks/useModules"
 import useBatchPersonae from "hooks/useBatchPersonae"
+import useBatchGroups from "hooks/useBatchGroups"
 import { createGroups, createSchedules } from "lib/grouping"
+import fetchJson from "lib/fetchJson"
+import { APIROUTES } from "config/routes"
+import { generatePOSTData } from "lib/utils"
 
 import PageLoading from "components/project/PageLoading"
 import Hero from "components/project/Hero"
@@ -12,10 +16,6 @@ import BatchNotReady from "./BatchNotReady"
 import TestsInfo from "./TestsInfo"
 import Schedule from "./Schedule"
 import Groups from "./Groups"
-import fetchJson from "lib/fetchJson"
-import { APIROUTES } from "config/routes"
-import { generatePOSTData } from "lib/utils"
-import useBatchGroups from "hooks/useBatchGroups"
 import FixedOverlay from "components/FixedOverlay"
 
 const Deployment = ({ user, project, batch }) => {
@@ -24,22 +24,18 @@ const Deployment = ({ user, project, batch }) => {
   const { personae, isLoading: personsLoading, isError: personsError, mutate: mutatePeronae } = useBatchPersonae(batch._id, 'fullname,group')
   const { modules, isError: moduleError, isLoading: modulesLoading } = useModules()
 
-  const [tests, setTests] = useState([])
-  const [sims, setSims] = useState([])
   const [mode, setMode] = useState("reading")
 
-  const [groups, setGroups] = useState([])
-  const [schedules, setSchedules] = useState([])
   const [names, setNames] = useState({})
+  const [newNames, setNewNames] = useState([])
   const [missingNames, setMissingNames] = useState([])
+  const [localGroups, setLocalGroups] = useState([])
   const [submitting, setSubmitting] = useState(false)
-  const [swappingEnabled, setSwappingEnabled] = useState(false)
 
   useEffect(() => {
     if (remoteGroups && personae) {
       const _groups = createGroups(personae)
-      setGroups(_groups)
-      setSchedules(createSchedules(batch._id, _groups))
+      setLocalGroups(createSchedules(batch._id, _groups))
 
       // Populate names key-val
       const namesKV = {}
@@ -49,13 +45,22 @@ const Deployment = ({ user, project, batch }) => {
       setNames(namesKV)
 
       // Find deleted names
-      let array = []
+      let found = []
+      let missing = []
       remoteGroups.forEach(g => {
         g.persons.forEach(id => {
-          if (!namesKV[id]) array.push(id)
+          if (!namesKV[id]) missing.push(id)
+          else found.push(id)
         })
       })
-      setMissingNames(array)
+      setMissingNames(missing)
+
+      // Find new names
+      let _newNames = []
+      personae.forEach(({ _id }) => {
+        if (!found.includes(_id)) _newNames.push(_id)
+      })
+      setNewNames(_newNames)
     }
   }, [remoteGroups, personae])
   
@@ -68,9 +73,6 @@ const Deployment = ({ user, project, batch }) => {
           else _sims.push(m)
         }
       })
-  
-      setTests(_tests)
-      setSims(_sims)
     }
 
   }, [batch, modules])
@@ -80,20 +82,17 @@ const Deployment = ({ user, project, batch }) => {
 
     // Tentative: using default slots
     const slots = ['08.00', '10.00', '13.00', '15.00']
-    // const body = generateSchedulesData(batch._id, slots, schedules)
-    // console.log(body)
     const resp = await fetchJson(
       APIROUTES.POST.SAVE_GROUP_SCHEDULES, 
       generatePOSTData({
         bid: batch._id,
         slots: slots,
-        groups: schedules, // with fake ids
+        groups: localGroups, // with fake ids
       })
     )
     console.log(resp)
     mutateGroups()
     setSubmitting(false)
-    setSwappingEnabled(false)
   }
 
   if (modulesLoading || groupsLoading || personsLoading) {
@@ -113,11 +112,13 @@ const Deployment = ({ user, project, batch }) => {
     />
   }
 
-  // 
-  if (schedules.length == 0) return <>OOOOOOO</>
-
   return <>
     <Hero project={project} title="Deployment" batch={batch} />
+
+    {/* <pre>
+      NEW: {JSON.stringify(newNames, null)}<br/>
+      MISSING: {JSON.stringify(missingNames, null)}<br/>
+    </pre> */}
 
     <Subhead title="Tes Mandiri (Online)">
       <div className="pr-2">
@@ -152,14 +153,13 @@ const Deployment = ({ user, project, batch }) => {
         <p>Batch ini tidak memerlukan grouping dan penjadwalan.</p>
       </>
       : <>
-        <Subhead title="Skedul Pelaksanaan"></Subhead>
-        <hr className="h-2 border-none" />
-        
         <div className="overflow-x-scroll">
           <Schedule 
-            groups={schedules} 
+            localGroups={localGroups} 
             remoteGroups={remoteGroups} 
             names={names} 
+            newNames={newNames}
+            missingNames={missingNames}
             isAdmin={isAdmin}
             saveGroupSchedules={saveGroupSchedules}
           />
@@ -167,30 +167,20 @@ const Deployment = ({ user, project, batch }) => {
 
         <hr className="h-8 border-none" />
 
-        <Subhead title="Grouping">
-          {missingNames.length == 0 && 
-          <label className="w-auto flex items-center space-x-2 text-gray-600 cursor-pointer">
-            <input type="checkbox"
-              className="rounded-sm text-green-500 focus:outline-none focus:ring-0"
-              onChange={e => setSwappingEnabled(e.target.checked)}
-            />
-            <span>Enable group swapping</span>
-          </label>}
-        </Subhead>
-
-        <hr className="mt-2 mb-2 border-yellow-500 border-opacity-50"/>
-
         <Groups 
-          groups={schedules} 
-          remoteGroups={remoteGroups} 
-          swappingEnabled={swappingEnabled}
+          localGroups={localGroups} 
+          remoteGroups={remoteGroups}
           names={names} 
+          newNames={newNames}
+          missingNames={missingNames}
           isAdmin={isAdmin} 
-          setSchedules={setSchedules}
+          setLocalGroups={setLocalGroups}
           saveGroupSchedules={saveGroupSchedules}
         />
       </>
     }
+
+    <hr className="h-8 border-none" />
 
     {/* Deployment action */}
     <Subhead title="Deployment Status" />
@@ -204,14 +194,6 @@ const Deployment = ({ user, project, batch }) => {
         </div>
       </div>
     </FixedOverlay>}
-
-    {/* <pre>BATCH ID {batch._id}</pre> */}
-    {/* <pre>Group 1: {JSON.stringify((groups[0]), null, 2)}</pre> */}
-    {/* <pre>Schedule 1: {JSON.stringify((schedules[0]), null, 2)}</pre> */}
-    {/* <pre>Remote group: {JSON.stringify((remoteGroups), null, 2)}</pre> */}
-    {/* <pre>{JSON.stringify(schedules[0], null, 2)}</pre> */}
-    {/* <pre>Person 1: {JSON.stringify((personae[0] || personae), null, 2)}</pre> */}
-    {/* <pre>Names KV {JSON.stringify(names, null, 2)}</pre> */}
   </>
 }
 
