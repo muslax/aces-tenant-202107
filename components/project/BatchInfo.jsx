@@ -1,5 +1,21 @@
 export default function BatchInfo({ batch, modules }) {
 
+  function batchDate() {
+    let dates = [
+      batch.simDate,
+      new Date(batch.testOpen).toISOString().substr(0, 10),
+      new Date(batch.testClose).toISOString().substr(0, 10)
+    ]
+    dates.sort((a, b) => {
+      if (a > b) return 1
+      else if (a < b) return -1
+      return 0
+    })
+    
+    if (dates[0] != dates[2]) return `${dates[0]} - ${dates[2]}`
+    return dates[0]
+  }
+
   function getPersons() {
     if (batch.personae == 0) return <span className="text-red-500">Belum tersedia data</span>;
     return <>
@@ -43,12 +59,13 @@ export default function BatchInfo({ batch, modules }) {
   }
 
   return <>
+    {/* <pre>{JSON.stringify(batchDate(), null, 2)}</pre> */}
     <div className="rounded-md border border-green-500 border-opacity-50 hover:border-opacity-80 hover:shadow-sm">
       <InfoRow label="Nama Batch:">
         <div className="font-bold">{batch.title}</div>
       </InfoRow>
       <InfoRow label="Tanggal:">
-        <div className="font-bold">{batch.date1}</div>
+        <div className="font-bold">{batchDate()}</div>
       </InfoRow>
       <InfoRow label="Tes mandiri:">
         <div>{getTests()}</div>
@@ -69,7 +86,7 @@ export default function BatchInfo({ batch, modules }) {
 function InfoRow({ label, children }) {
   return (
     <div className="flex items-center px-4 py-3 border-b border-green-500 border-opacity-50 last:border-none">
-      <label className="w-36 sm:w-40 text-gray-500">
+      <label className="w-28 sm:w-40 text-gray-500">
         {label}
       </label>
       <div className="flex-grow">

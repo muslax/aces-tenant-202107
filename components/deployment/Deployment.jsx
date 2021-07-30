@@ -120,7 +120,7 @@ const Deployment = ({ user, project, batch }) => {
       MISSING: {JSON.stringify(missingNames, null)}<br/>
     </pre> */}
 
-    <Subhead title="Tes Mandiri (Online)">
+    {/* <Subhead title="Tes Mandiri (Online)">
       <div className="pr-2">
       {isAdmin && batch.tests.length > 0 && mode == "reading" && (
         <button 
@@ -141,9 +141,10 @@ const Deployment = ({ user, project, batch }) => {
       ? <p>Batch ini tidak memiliki modul test mandiri.</p>
       : <>
         <hr className="h-2 border-none" />
-        <TestsInfo batch={batch} mode={mode} setMode={setMode} />
+        <TestsInfo batch={batch} mode={mode} setMode={setMode} isAdmin={isAdmin} />
       </>
-    }
+    } */}
+    <TestsInfo batch={batch} isAdmin={isAdmin} />
 
     <hr className="h-8 border-none" />
 
